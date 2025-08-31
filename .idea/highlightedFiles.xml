@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectTreeColorHighlighter">
+    <files />
+    <colors>
+      <color id="1" value="#003040" name="(Fn.n.) Function:Number" enabled="true" />
+      <color id="2" value="#000040" name="(D1) Sound" enabled="true" />
+      <color id="3" value="#300040" name="(N.) Number" enabled="true" />
+      <color id="4" value="#303040" name="(T0) Code" enabled="true" />
+      <color id="5" value="#400030" name="(Fd2d2) Function:Image" enabled="true" />
+      <color id="6" value="#400000" name="(D2) Image" enabled="true" />
+      <color id="7" value="#403000" name="03" enabled="true" />
+      <color id="8" value="#403030" name="(T1) Pattern" enabled="true" />
+      <color id="9" value="#304000" name="05" enabled="true" />
+      <color id="10" value="#004000" name="(D3) Video" enabled="true" />
+      <color id="11" value="#004030" name="07" enabled="true" />
+      <color id="12" value="#304030" name="(T2) English" enabled="true" />
+      <color id="13" value="#303000" name="(*) Other" enabled="true" />
+      <color id="14" value="#003030" name="(F**) Function" enabled="true" />
+      <color id="15" value="#300030" name="(E*) Easy-Edit" enabled="true" />
+      <color id="16" value="#000000" name="Meta" enabled="true" />
+    </colors>
+    <option name="marksForCollapsedHighlights" value="Dots" />
+  </component>
+</project>
