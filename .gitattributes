@@ -1,9 +1,8 @@
-projects/**      filter=lfs     diff=lfs     merge=lfs
-
 *.png            filter=lfs     diff=lfs     merge=lfs     binary
 *.jpg            filter=lfs     diff=lfs     merge=lfs     binary
 *.jpeg           filter=lfs     diff=lfs     merge=lfs     binary
 *.mp4            filter=lfs     diff=lfs     merge=lfs     binary
+*.wav            filter=lfs     diff=lfs     merge=lfs     binary
 
 *.bin            filter=lfs     diff=lfs     merge=lfs     binary
 *.ttf            filter=lfs     diff=lfs     merge=lfs     binary

@@ -24,19 +24,24 @@ import ws.schild.jave.progress.EncoderProgressListener;
 public class Utils {
     private static final String MSG_FORMAT = "%-32s";
     private static final Object progressLock = new Object();
+    private static final int totalLoopCalculations = 4096;
+
 
     public static void loopWithProgress(Loopable l, int max, String msg) {
         long start = System.currentTimeMillis();
 
-        for (int i = 0; i < max; i++) {
+        int sl = (max + totalLoopCalculations - 1) / totalLoopCalculations;
+        for (int i = 0; i < totalLoopCalculations; i++) {
             try {
-                l.runLoop(i);
+                for (int j = i * sl; j < Math.min((i + 1) * sl, max); j++) {
+                    l.runLoop(j);
+                }
             } catch (Exception e) {
                 System.out.println();
                 throw new RuntimeException(e);
             }
 
-            progressMsg(start, (float) i / max, msg);
+            progressMsg(start, (float) (i + 0.5) * sl / max, msg);
         }
 
         finishMsg(start, msg);
@@ -51,24 +56,28 @@ public class Utils {
             AtomicReference<Exception> firstException = new AtomicReference<>();
             AtomicInteger exceptionIndex = new AtomicInteger(-1);
 
-            for (int i = 0; i < max; i++) {
+            int sl = (max + totalLoopCalculations - 1) / totalLoopCalculations;
+            for (int i = 0; i < totalLoopCalculations; i++) {
                 final int finalI = i;
                 executorService.submit(() -> {
-                    try {
-                        if (firstException.get() != null) {
-                            return;
-                        }
+                    if (firstException.get() != null) {
+                        return;
+                    }
 
-                        l.runLoop(finalI);
-                    } catch (Exception e) {
-                        firstException.compareAndSet(null, e);
-                        exceptionIndex.compareAndSet(-1, finalI);
-                    } finally {
-                        int doneInt = done.incrementAndGet();
-                        synchronized (progressLock) {
-                            progressMsg(start, (float) doneInt / max, msg);
+                    for (int j = finalI * sl; j < Math.min((finalI + 1) * sl, max); j++) {
+                        try {
+                            l.runLoop(j);
+                        } catch (Exception e) {
+                            firstException.compareAndSet(null, e);
+                            exceptionIndex.compareAndSet(-1, j);
+                        } finally {
+                            int doneInt = done.incrementAndGet();
+                            synchronized (progressLock) {
+                                progressMsg(start, (float) (doneInt + 0.5) * sl / max, msg);
+                            }
                         }
                     }
+
                 });
             }
 

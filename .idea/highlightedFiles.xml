@@ -1,7 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ProjectTreeColorHighlighter">
-    <files />
+    <files>
+      <node color="2" path="$PROJECT_DIR$/projects/([D1i] 41-76) Ius_Ymr_Ut76.wav" />
+      <node color="10" path="$PROJECT_DIR$/projects/([D3i]~ 26-1c) HexRings.mp4" />
+      <node color="15" path="$PROJECT_DIR$/projects/([Ev2i]~ 26-27) RiIcon.md" />
+      <node color="15" path="$PROJECT_DIR$/projects/([Ev2i]~ 26-27) RiIcon.png" />
+      <node color="15" path="$PROJECT_DIR$/projects/([Ev2i]~ 26-27) RiIcon.xml" />
+      <node color="5" path="$PROJECT_DIR$/projects/([Fd2d2i]~ 26-02) SBloom.md" />
+      <node color="1" path="$PROJECT_DIR$/projects/([Fn2n1i]~ 26-42) Exp2Sequence.txt" />
+      <node color="13" path="$PROJECT_DIR$/projects/([M0i] 26-e3) RiSerializationFormat.md" />
+      <node color="13" path="$PROJECT_DIR$/projects/([M0R]~ 7e-7e) MELODY.md" />
+      <node color="8" path="$PROJECT_DIR$/projects/([T1i] 26-c2) Permu 16.txt" />
+      <node color="8" path="$PROJECT_DIR$/projects/([T1i] 26-c4) Permu 24.txt" />
+      <node color="12" path="$PROJECT_DIR$/README.md" />
+      <node color="21" path="$PROJECT_DIR$/src" />
+      <node color="20" path="$PROJECT_DIR$/src/main" />
+      <node color="19" path="$PROJECT_DIR$/src/main/java" />
+      <node color="18" path="$PROJECT_DIR$/src/main/java/com" />
+      <node color="17" path="$PROJECT_DIR$/src/main/java/com/ri" />
+      <node color="1" path="$PROJECT_DIR$/src/main/java/com/ri/Exp2Sequence.java" />
+      <node color="16" path="$PROJECT_DIR$/src/main/java/com/ri/helper" />
+      <node color="10" path="$PROJECT_DIR$/src/main/java/com/ri/HexRings.java" />
+      <node color="2" path="$PROJECT_DIR$/src/main/java/com/ri/Ius_Ymr_Ut76.java" />
+      <node color="16" path="$PROJECT_DIR$/src/main/java/com/ri/meta" />
+      <node color="8" path="$PROJECT_DIR$/src/main/java/com/ri/Permu.java" />
+      <node color="15" path="$PROJECT_DIR$/src/main/java/com/ri/RiIcon.java" />
+    </files>
     <colors>
       <color id="1" value="#003040" name="(Fn.n.) Function:Number" enabled="true" />
       <color id="2" value="#000040" name="(D1) Sound" enabled="true" />
@@ -19,6 +44,11 @@
       <color id="14" value="#003030" name="(F**) Function" enabled="true" />
       <color id="15" value="#300030" name="(E*) Easy-Edit" enabled="true" />
       <color id="16" value="#000000" name="Meta" enabled="true" />
+      <color id="17" value="#101010" name="G1" enabled="true" />
+      <color id="18" value="#151515" name="G2" enabled="true" />
+      <color id="19" value="#202020" name="G3" enabled="true" />
+      <color id="20" value="#252525" name="G4" enabled="true" />
+      <color id="21" value="#303030" name="G5" enabled="true" />
     </colors>
     <option name="marksForCollapsedHighlights" value="Dots" />
   </component>

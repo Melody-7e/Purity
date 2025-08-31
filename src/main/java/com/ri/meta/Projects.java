@@ -60,15 +60,16 @@ public class Projects {
             if (!old.getType().equals(projectName.getType())) {
                 throw new RuntimeException("Same category and id but different types, " + old + " and " + projectName);
             }
-            if (!old.getPd().equals(projectName.getPd())) {
-                throw new RuntimeException("Same category and id but different pd, " + old + " and " + projectName);
+            if (projectName.getName().equals(old.getName())) {
+                if (!old.getPd().equals(projectName.getPd())) {
+                    throw new RuntimeException("Same category and id but different pd, " + old + " and " + projectName);
+                }
+                if (!old.getState().equals(projectName.getState())) {
+                    throw new RuntimeException("Same category and id but different state, " + old + " and " + projectName);
+                }
             }
-            if (!old.getState().equals(projectName.getState())) {
-                throw new RuntimeException("Same category and id but different state, " + old + " and " + projectName);
-            }
-            // name can be different to mark variant/format
+            // else name can be different to mark variant/format
         }
-
     }
 
     public void add(ProjectName projectName) {
@@ -135,6 +136,4 @@ public class Projects {
 
         return null;
     }
-
-
 }

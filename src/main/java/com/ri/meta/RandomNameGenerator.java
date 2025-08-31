@@ -32,7 +32,16 @@ public class RandomNameGenerator {
         sb.append('_');
 
         for (int i = 0; i < l3; i++) {
-            sb.append(getNumAlpha(r, i == 0));
+            sb.append(getAlpha(r, i == 0));
+        }
+
+        if (l3 < 1) {
+            for (int i = 0; i < 2; i++) {
+                sb.append(getHexNum(r));
+            }
+        } else {
+            sb.append(getNum(r));
+            sb.append(getHexNum(r));
         }
 
         return sb.toString();
@@ -43,8 +52,13 @@ public class RandomNameGenerator {
         return (char) ('a' + r.nextInt(26));
     }
 
-    private static char getNumAlpha(Random r, boolean alpha) {
-        if (alpha) return (char) ('A' + r.nextInt(26));
-        return (char) ('0' + r.nextInt(10));
+    private static char getHexNum(Random r) {
+        int x = r.nextInt(16);
+        if (x < 10) return (char) ('0' + x);
+        else return (char) ('a' + (x - 10));
+    }
+
+    private static char getNum(Random r) {
+        return (char) ('a' + r.nextInt(10));
     }
 }

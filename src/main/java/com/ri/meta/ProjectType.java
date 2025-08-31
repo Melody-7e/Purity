@@ -8,10 +8,11 @@ public class ProjectType {
     // @formatter:off
     // PRIMITIVES
     public static final ProjectType OTHER              = new ProjectType(MISC,                  0);
+    public static final ProjectType VECTOR_IMG         = new ProjectType(VECTOR,                2);
+    public static final ProjectType MODEL_3D           = new ProjectType(VECTOR,                3);
     public static final ProjectType SOUND              = new ProjectType(DIMENSION_VISUAL,      1);
     public static final ProjectType IMAGE              = new ProjectType(DIMENSION_VISUAL,      2);
     public static final ProjectType VIDEO              = new ProjectType(DIMENSION_VISUAL,      3);
-    public static final ProjectType MODEL_3D           = new ProjectType(DIMENSION_VISUAL,      4);
     public static final ProjectType NULL               = new ProjectType(NUMBER,                0);
     public static final ProjectType INT_NUMBER         = new ProjectType(NUMBER,                1);
     public static final ProjectType REAL_NUMBER        = new ProjectType(NUMBER,                2);
@@ -21,14 +22,15 @@ public class ProjectType {
     public static final ProjectType ENGLISH            = new ProjectType(TEXT,                  2);
 
 
-    // COMMONLY USED FUNCTIONS
+    // COMMONLY USED COMPLEXES
     public static final ProjectType INT_SERIES         = new ProjectType(FUNCTION,      INT_NUMBER,         INT_NUMBER);
     public static final ProjectType RI_FUNCTION        = new ProjectType(FUNCTION,      REAL_NUMBER,        INT_NUMBER); // !coincidence ri
     public static final ProjectType CC_FUNCTION        = new ProjectType(FUNCTION,      COMPLEX_NUMBER,     COMPLEX_NUMBER);
     public static final ProjectType IMAGE_EFFECT       = new ProjectType(FUNCTION,      IMAGE,              IMAGE);
 
-    public static final ProjectType EDITABLE_IMAGE     = new ProjectType(EASY_EDIT,     IMAGE);
-    public static final ProjectType EDITABLE_3D        = new ProjectType(EASY_EDIT,     MODEL_3D);
+    public static final ProjectType EASYEDIT_IMAGE     = new ProjectType(EASY_EDIT,     IMAGE);
+    public static final ProjectType EASYEDIT_VEC_IMG   = new ProjectType(EASY_EDIT,     VECTOR_IMG);
+    public static final ProjectType EASYEDIT_3D        = new ProjectType(EASY_EDIT,     MODEL_3D);
     // @formatter:on
 
     private final ProjectTypeCode code;
@@ -152,10 +154,11 @@ public class ProjectType {
 
     public enum ProjectTypeCode {
         // @formatter:off
-        MISC                ('m', 0, 1), // 0: OTHER
-        DIMENSION_VISUAL    ('d', 1, 5), //                 1: SOUND,       2: IMAGE,       3: VIDEO        4: 3D_MODEL
-        NUMBER              ('n', 0, 4), // 0: NULL,        1: INTEGER,     2: REAL,        3: COMPLEX
-        TEXT                ('t', 0, 3), // 0: Code,        1: Pattern      2: English
+        MISC                ('m', 0, 4), // 0: OTHER
+        VECTOR              ('v', 2, 4), //                                 2: VECTOR_IMG   3: 3D_MODEL
+        DIMENSION_VISUAL    ('d', 1, 4), //                 1: SOUND        2: IMAGE        3: VIDEO
+        NUMBER              ('n', 0, 4), // 0: NULL         1: INTEGER      2: REAL         3: COMPLEX
+        TEXT                ('t', 0, 3), // 0: CODE         1: PATTERN      2: ENGLISH
 
         FUNCTION            ('f', 2),    // (INPUT, OUTPUT)     function that takes INPUT and gives OUTPUT
         EASY_EDIT           ('e', 1);    // (TYPE)              a `type` that let you easily make changes to the TYPE object.

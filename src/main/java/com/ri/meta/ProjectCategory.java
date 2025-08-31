@@ -8,6 +8,9 @@ public enum ProjectCategory {
     // @formatter:off
     VOID                (0x00),             // VOID exists for no reason
     SIGNATURE           (0x26),             // Something I found all by myself and consider as signature
+    CLASS_T             (0x41),             // Not nice, not bad, useless and pointless, \and impure\
+    CLASS_S             (0x46),             // Ok-ok, nothing very special, \somewhat impure\
+    CLASS_C             (0x6a),             // is_nice and is_pure, still something's missing that it doesn't feel much pure.
     MELODY              (0x7e),             // My paracosm (imaginary world) or F/B memory (Forbidden Memory, some \shall not exist\ memories I somehow have)
     INFINITY            (0xff);             // Something that is universal and valuable (definitely, will not be used)
     // @formatter:on
