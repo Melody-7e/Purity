@@ -2,7 +2,7 @@ plugins {
     id("java")
 }
 
-group = "com.ri"
+group   = "com.ri"
 version = "1.0"
 
 repositories {

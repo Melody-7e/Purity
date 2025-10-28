@@ -39,43 +39,46 @@ public class ProjectName {
         String name;
         ProjectState state;
 
-        String[] topSplit = string.split("[()]", 3);
+        if (!string.startsWith("([")) throw new RuntimeException("Invalid Name");
 
-        name = topSplit[2].trim();
+
+
+        int baseNameLen = string.indexOf(')');
+
+        String baseName = string.substring(2, baseNameLen); // TypePd]State Category-Id  or TypePd]State <Category> Id
+        name = string.substring(baseNameLen + 1);
+
         if (name.isEmpty()) name = null;
 
-        String baseName = topSplit[1];
+        boolean isUrl = baseName.contains(" ");
 
-        if (!"".equals(topSplit[0])) throw new RuntimeException("Invalid Name");
+        int typePdLen = baseName.lastIndexOf(']');
+        int stateStringLen = baseName.indexOf(' ');
+        int categoryLen = baseName.indexOf(isUrl ? '-' : ' ', stateStringLen);
 
-
-        String[] bottomSplit = baseName.split("[ \\-]", 3);
-        String typePdStateString = bottomSplit[0];
-        String categoryString = bottomSplit[1];
-        String idString = bottomSplit[2];
+        String typePdString = baseName.substring(0, typePdLen);
+        String stateString = baseName.substring(typePdLen + 1, stateStringLen);
+        String categoryString = baseName.substring(stateStringLen + 1, categoryLen);
+        String idString = baseName.substring(categoryLen + 1);
 
         {
-            int brIndex = typePdStateString.indexOf(']');
-            if (!(typePdStateString.startsWith("[") && brIndex != -1)) throw new RuntimeException("Invalid Name");
+            int[] index = new int[1];
+            type = ProjectType.valueOf(typePdString, index);
 
-            int[] index = new int[]{1};
-            type = ProjectType.valueOf(typePdStateString, index);
-
-            String pdString = typePdStateString.substring(index[0], brIndex);
+            String pdString = typePdString.substring(index[0]);
             pd = ProjectPD.fromSymbol(pdString);
-
-            String stateString = typePdStateString.substring(brIndex + 1);
-            state = ProjectState.fromSymbol(stateString);
         }
 
         {
-            if (categoryString.startsWith("<") && categoryString.endsWith(">"))
+            state = ProjectState.fromSymbol(stateString);
+
+            if (categoryString.startsWith("<") && categoryString.endsWith(">")) {
+                if (isUrl) throw new RuntimeException("Invalid Name");
                 categoryString = categoryString.substring(1, categoryString.length() - 1);
+            }
 
             category = ProjectCategory.fromValue((byte) Integer.parseInt(categoryString, 16));
-        }
 
-        {
             id = (byte) Integer.parseInt(idString, 16);
         }
 
@@ -120,7 +123,7 @@ public class ProjectName {
         int i = 0;
         File file;
         do {
-            file = new File(PROJECT_DIR, urlSafeName + ((i!=0) ? " #" + i : "") + '.' + extension);
+            file = new File(PROJECT_DIR, urlSafeName + ((i != 0) ? " #" + i : "") + '.' + extension);
             i++;
         } while (file.exists());
 

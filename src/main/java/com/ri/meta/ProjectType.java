@@ -18,15 +18,23 @@ public class ProjectType {
     public static final ProjectType REAL_NUMBER        = new ProjectType(NUMBER,                2);
     public static final ProjectType COMPLEX_NUMBER     = new ProjectType(NUMBER,                3);
     public static final ProjectType CODE               = new ProjectType(TEXT,                  0);
-    public static final ProjectType PATTERN            = new ProjectType(TEXT,                  1);
-    public static final ProjectType ENGLISH            = new ProjectType(TEXT,                  2);
+    public static final ProjectType DATA               = new ProjectType(TEXT,                  1);
+    public static final ProjectType CHARACTERS         = new ProjectType(TEXT,                  2);
+    public static final ProjectType ENGLISH            = new ProjectType(TEXT,                  3);
 
 
     // COMMONLY USED COMPLEXES
-    public static final ProjectType INT_SERIES         = new ProjectType(FUNCTION,      INT_NUMBER,         INT_NUMBER);
-    public static final ProjectType RI_FUNCTION        = new ProjectType(FUNCTION,      REAL_NUMBER,        INT_NUMBER); // !coincidence ri
-    public static final ProjectType CC_FUNCTION        = new ProjectType(FUNCTION,      COMPLEX_NUMBER,     COMPLEX_NUMBER);
-    public static final ProjectType IMAGE_EFFECT       = new ProjectType(FUNCTION,      IMAGE,              IMAGE);
+    public static final ProjectType INT_VEC2           = new ProjectType(INT_NUMBER,    INT_NUMBER);
+    public static final ProjectType INT_VEC3           = new ProjectType(INT_NUMBER,    INT_NUMBER,     INT_NUMBER);
+    public static final ProjectType INT_VEC4           = new ProjectType(INT_NUMBER,    INT_NUMBER,     INT_NUMBER,     INT_NUMBER);
+    public static final ProjectType REAL_VEC2          = new ProjectType(REAL_NUMBER,   REAL_NUMBER);
+    public static final ProjectType REAL_VEC3          = new ProjectType(REAL_NUMBER,   REAL_NUMBER,    REAL_NUMBER);
+    public static final ProjectType REAL_VEC4          = new ProjectType(REAL_NUMBER,   REAL_NUMBER,    REAL_NUMBER,    REAL_NUMBER);
+
+    public static final ProjectType INT_SERIES         = new ProjectType(FUNCTION,      INT_NUMBER,     INT_NUMBER);
+    public static final ProjectType RI_FUNCTION        = new ProjectType(FUNCTION,      INT_NUMBER,     REAL_NUMBER); // !coincidence ri
+    public static final ProjectType CC_FUNCTION        = new ProjectType(FUNCTION,      COMPLEX_NUMBER, COMPLEX_NUMBER);
+    public static final ProjectType IMAGE_EFFECT       = new ProjectType(FUNCTION,      IMAGE,          IMAGE);
 
     public static final ProjectType EASYEDIT_IMAGE     = new ProjectType(EASY_EDIT,     IMAGE);
     public static final ProjectType EASYEDIT_VEC_IMG   = new ProjectType(EASY_EDIT,     VECTOR_IMG);
@@ -57,8 +65,24 @@ public class ProjectType {
         this.i = -1;
     }
 
+    public ProjectType(ProjectType... codes) {
+        this.code = ProjectTypeCode.ARRAY;
+        this.child = codes;
+        this.i = -1;
+    }
+
     private static ProjectType valueOfRaw(String string, int[] index) {
         char ch = string.charAt(index[0]++);
+
+        if (ch == '[') {
+            ArrayList<ProjectType> types = new ArrayList<>();
+            do {
+                types.add(valueOfRaw(string, index));
+            } while (string.charAt(index[0]) != ']');
+            index[0]++;
+
+            return new ProjectType(types.toArray(new ProjectType[0]));
+        }
 
         boolean parenthesisUsed;
         if (ch == '(') {
@@ -85,7 +109,7 @@ public class ProjectType {
 
         ProjectType[] child = new ProjectType[c.size];
         for (int i = 0; i < c.size; i++) {
-            child[i] = valueOf(string, index);
+            child[i] = valueOfRaw(string, index);
         }
 
         if (parenthesisUsed) {
@@ -95,7 +119,7 @@ public class ProjectType {
         return new ProjectType(c, child);
     }
 
-    public static ProjectType valueOf(String string, int[] index) {
+    static ProjectType valueOf(String string, int[] index) {
         return valueOfRaw(string.toLowerCase(Locale.ROOT), index);
     }
 
@@ -114,7 +138,9 @@ public class ProjectType {
         if (child == null) {
             s.append(code.symbol).append(i);
         } else {
-            if (!isRoot) {
+            if (code == ARRAY) {
+                s.append("[");
+            } else if (!isRoot) {
                 s.append('(');
                 s.append(Character.toUpperCase(code.symbol));
             } else {
@@ -125,7 +151,9 @@ public class ProjectType {
                 t.getCode(s);
             }
 
-            if (!isRoot) s.append(')');
+            if (code == ARRAY) {
+                s.append("]");
+            } else if (!isRoot) s.append(')');
         }
     }
 
@@ -154,14 +182,16 @@ public class ProjectType {
 
     public enum ProjectTypeCode {
         // @formatter:off
-        MISC                ('m', 0, 4), // 0: OTHER
+        MISC                ('m', 0, 2), // 0: OTHER        1: ANY
         VECTOR              ('v', 2, 4), //                                 2: VECTOR_IMG   3: 3D_MODEL
         DIMENSION_VISUAL    ('d', 1, 4), //                 1: SOUND        2: IMAGE        3: VIDEO
         NUMBER              ('n', 0, 4), // 0: NULL         1: INTEGER      2: REAL         3: COMPLEX
-        TEXT                ('t', 0, 3), // 0: CODE         1: PATTERN      2: ENGLISH
+        TEXT                ('t', 0, 4), // 0: CODE         1: DATA         2: CHARACTERS   3: ENGLISH
 
-        FUNCTION            ('f', 2),    // (INPUT, OUTPUT)     function that takes INPUT and gives OUTPUT
-        EASY_EDIT           ('e', 1);    // (TYPE)              a `type` that let you easily make changes to the TYPE object.
+        FUNCTION            ('f', 2),    // (OUTPUT, INPUT)     function that takes INPUT and gives OUTPUT
+        EASY_EDIT           ('e', 1),    // (TYPE)              a `type` that let you easily make changes to the TYPE object
+
+        ARRAY               ();
         // @formatter:on
 
         private static final Map<Character, ProjectTypeCode> SYMBOL_MAP;
@@ -179,7 +209,15 @@ public class ProjectType {
         final int max;
         final int size;
 
+        ProjectTypeCode() {
+            this.symbol = '\00';
+            this.min = -1;
+            this.max = -1;
+            this.size = -1;
+        }
+
         ProjectTypeCode(char code, int min, int max) {
+            assert min >= 0 && max <= 10;
             this.symbol = code;
             this.min = min;
             this.max = max;

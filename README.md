@@ -26,11 +26,15 @@ There are many type of projects: image, video, sound, number sequence, functions
 
 ### Unique Locators
 
-A project can be uniquely located in 3 ways:
+A project can be uniquely located by its category, id and name:
 
-- Name: Simple, Human Readable Name (sometime not readable), can distinguish between different variants/formats. The name must 
-  points to the source, if any, else just a description of content.
-- Category & ID: 4 byte value 2 byte for category and 2 byte for ID, may point to several variants/formats at once.
+- Category & ID: 4 byte value 2 byte for category and 2 byte for ID, may point to several variants/formats at once. It will 
+  point to all project with same src or which are similar. Like a random noise generator can generate multiple images or an 
+  android vector can be rasterised to a PNG image.
+
+- Name: Simple, Human Readable Name (sometime not readable), can distinguish between different variants/formats. If it's a 
+  LEFT PD project, the name must points to the source, or it shall be a text file with src code or src code location. Later 
+  info can give parameters or file format or post effects etc.
 
 ## Nomenclature
 

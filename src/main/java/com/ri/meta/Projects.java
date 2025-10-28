@@ -3,6 +3,7 @@ package com.ri.meta;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class Projects {
     public static final File PROJECT_DIR = new File("projects/");
@@ -47,33 +48,44 @@ public class Projects {
     private void validate() {
         ids = new HashMap<>(projectNames.size());
         for (ProjectName projectName : projectNames) {
-            checkName(projectName);
+            checkName(projectName, true);
         }
     }
 
     public void checkName(ProjectName projectName) {
+        checkName(projectName, false);
+    }
+
+    private void checkName(ProjectName projectName, boolean add) {
         short id = (short) (projectName.getCategory().value() << 8 | projectName.getId());
 
-        ProjectName old = ids.put(id, projectName);
+        ProjectName old;
+
+        if (add) {
+            old = ids.put(id, projectName);
+        } else {
+            old = ids.get(id);
+        }
 
         if (old != null) {
             if (!old.getType().equals(projectName.getType())) {
                 throw new RuntimeException("Same category and id but different types, " + old + " and " + projectName);
-            }
-            if (projectName.getName().equals(old.getName())) {
+            } else if (projectName.getName().equals(old.getName())) {
                 if (!old.getPd().equals(projectName.getPd())) {
-                    throw new RuntimeException("Same category and id but different pd, " + old + " and " + projectName);
+                    throw new RuntimeException("Same category and id and name but different pd, " + old + " and " + projectName);
                 }
                 if (!old.getState().equals(projectName.getState())) {
-                    throw new RuntimeException("Same category and id but different state, " + old + " and " + projectName);
+                    throw new RuntimeException("Same category and id and name but different state, " + old + " and " + projectName);
                 }
+
+                throw new RuntimeException("Project with same category and id and name already exist, " + old + " and " + projectName);
             }
             // else name can be different to mark variant/format
         }
     }
 
     public void add(ProjectName projectName) {
-        checkName(projectName);
+        checkName(projectName, true);
         projectNames.add(projectName);
     }
 
@@ -127,13 +139,13 @@ public class Projects {
         return results;
     }
 
-    public ProjectName getName(String name) {
+    public ArrayList<ProjectName> getByName(String name) {
         ArrayList<ProjectName> results = new ArrayList<>();
         for (ProjectName projectName : projectNames) {
-            if (projectName.getName().equals(name))
-                return projectName;
+            if (Objects.equals(projectName.getName(), name))
+                results.add(projectName);
         }
 
-        return null;
+        return results;
     }
 }

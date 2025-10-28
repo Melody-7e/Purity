@@ -40,7 +40,7 @@ public class Permu {
 
     private void writeFile() throws Exception {
         // @formatter:off
-        ProjectType     type        = ProjectType.PATTERN;
+        ProjectType     type        = ProjectType.CHARACTERS;
         ProjectPD       pd          = ProjectPD.LEFT;
         ProjectCategory category    = ProjectCategory.SIGNATURE;
         byte            id          = this.id;

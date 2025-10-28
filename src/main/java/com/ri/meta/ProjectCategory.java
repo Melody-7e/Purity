@@ -6,7 +6,7 @@ import java.util.Map;
 
 public enum ProjectCategory {
     // @formatter:off
-    VOID                (0x00),             // VOID exists for no reason
+    VOID                (0x00),             // VOID or undefined
     SIGNATURE           (0x26),             // Something I found all by myself and consider as signature
     CLASS_T             (0x41),             // Not nice, not bad, useless and pointless, \and impure\
     CLASS_S             (0x46),             // Ok-ok, nothing very special, \somewhat impure\

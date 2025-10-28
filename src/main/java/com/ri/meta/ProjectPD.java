@@ -6,7 +6,8 @@ import java.util.Map;
 
 // Purity Direction
 public enum ProjectPD {
-    //@formatter:off
+    // For LEFT_PURE, LEFT, LEFT_MID the first word must point to the src code and later to parameters or file shall be a .md or .txt with src code or src code location inside.
+    // @formatter:off
     LEFT_PURE   ("i-"),     // Totally programmable, Pure and Universal
     LEFT        ("i"),      // Totally programmable
     LEFT_MID    ("i+"),     // Programmable but post edits
