@@ -15,6 +15,7 @@ build/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
+.idea/developer-tools.xml
 
 ### Eclipse ###
 .apt_generated
