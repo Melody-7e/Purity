@@ -19,7 +19,7 @@ public class RandomNameGenerator {
 
         int l1 = r.nextInt(2, 4);         // 2-3
         int l2 = r.nextInt(3, 7 - l1);    // 3-4
-        int l3 = r.nextInt(5 - l2, 3);    // 1-2
+        int l3 = r.nextInt(1, 6 - l2);    // 1-2
 
         for (int i = 0; i < l1; i++) {
             sb.append(getAlpha(r, i == 0));
@@ -35,13 +35,12 @@ public class RandomNameGenerator {
             sb.append(getAlpha(r, i == 0));
         }
 
-        if (l3 < 1) {
-            for (int i = 0; i < 2; i++) {
-                sb.append(getHexNum(r));
-            }
+        if (l3 == 1) {
+            sb.append(getHexNum(r));
+            sb.append(getHexNum(r));
         } else {
             sb.append(getNum(r));
-            sb.append(getHexNum(r));
+            sb.append(getNum(r));
         }
 
         return sb.toString();
@@ -59,6 +58,6 @@ public class RandomNameGenerator {
     }
 
     private static char getNum(Random r) {
-        return (char) ('a' + r.nextInt(10));
+        return (char) ('0' + r.nextInt(10));
     }
 }

@@ -8,8 +8,8 @@ import java.util.ArrayList;
 
 
 public class Permu {
-    private static final Permu permu_16 = new Permu((byte) 0xc2, "4d-123-5c-6b-98a-0f-7e");
-    private static final Permu permu_24 = new Permu((byte) 0xc4, "7D-5C-EFG-I0-M-A4-B3-H-LN-98-J-126-K");
+    public static final Permu permu_16 = new Permu((byte) 0xc2, "4d-123-5c-6b-98a-0f-7e");
+    public static final Permu permu_24 = new Permu((byte) 0xc4, "7D-5C-EFG-I0-M-A4-B3-H-LN-98-J-126-K");
 
     private final byte id;
     private final String string;
@@ -66,7 +66,29 @@ public class Permu {
         writer.close();
     }
 
-    private int[] wrap(int[] data) {
+    public void wrapInto(int[] data, int index) {
+        if (data.length < permutation.length + index) throw new RuntimeException();
+
+        int[] newData = new int[permutation.length];
+        for (int i = 0; i < permutation.length; i++) {
+            newData[i] = data[permutation[i] + index];
+        }
+
+        System.arraycopy(newData, 0, data, index, permutation.length);
+    }
+
+    public int[] wrap(int[] data, int index) {
+        if (data.length < permutation.length + index) throw new RuntimeException();
+
+        int[] newData = new int[permutation.length];
+        for (int i = 0; i < permutation.length; i++) {
+            newData[i] = data[permutation[i] + index];
+        }
+
+        return newData;
+    }
+
+    public int[] wrap(int[] data) {
         if (data.length != permutation.length) throw new RuntimeException();
 
         int[] newData = new int[permutation.length];
@@ -77,7 +99,7 @@ public class Permu {
         return newData;
     }
 
-    private String wrap(String data) {
+    public String wrap(String data) {
         if (data.length() != permutation.length) throw new RuntimeException();
 
         StringBuilder newData = new StringBuilder(permutation.length);
