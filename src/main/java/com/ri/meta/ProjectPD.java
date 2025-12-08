@@ -10,7 +10,7 @@ public enum ProjectPD {
     // @formatter:off
     LEFT_PURE   ("i-"),     // Totally programmable, Pure and Universal
     LEFT        ("i"),      // Totally programmable
-    LEFT_MID    ("i+"),     // Programmable but post edits
+    LEFT_MID    ("i+"),     // Programmable but post edits or too much magic /numbers/
     CENTER      ("0"),      // Pure Mix of computable and human-only interactions (or unknown for some reason)
     RIGHT_MID   ("R-"),     // Human-Made but computer effects later
     RIGHT       ("R");      // Totally Human-Made.

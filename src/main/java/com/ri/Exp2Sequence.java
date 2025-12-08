@@ -2,7 +2,6 @@ package com.ri;
 
 import static com.ri.helper.PurityMaths.log2;
 
-import com.ri.helper.PurityMaths;
 import com.ri.meta.*;
 
 import java.io.BufferedWriter;
@@ -59,7 +58,7 @@ public class Exp2Sequence {
 
     public static void main(String[] args) throws Exception {
         // @formatter:off
-        ProjectType     type        = ProjectType.RI_FUNCTION;
+        ProjectType     type        = ProjectType.IR_FUNCTION;
         ProjectPD       pd          = ProjectPD.LEFT;
         ProjectCategory category    = ProjectCategory.SIGNATURE;
         byte            id          = (byte) 0x42;

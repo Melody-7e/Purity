@@ -1,6 +1,6 @@
-# Ri Icon
+# S-Bloom
 
-> Full implementation is available at my _rili_ project.
+> Impl: _rili_ > sbloom > **SBloom**
 
 # Main Function
 

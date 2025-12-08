@@ -23,7 +23,7 @@ public class d2ElectronDensity {
         String          _clazzName  = d2ElectronDensity.class.getSimpleName();
         ProjectType     type        = new ProjectType(FUNCTION, IMAGE, INT_VEC2);
         ProjectPD       pd          = ProjectPD.LEFT;
-        ProjectCategory category    = ProjectCategory.CLASS_T;
+        ProjectCategory category    = ProjectCategory.COPY;
         byte            id          = (byte) 17;
         String          name        = _clazzName;
         ProjectState    state       = ProjectState.FAILED;
@@ -35,18 +35,17 @@ public class d2ElectronDensity {
         System.out.print("================================ ");
         System.out.println(projectName.getFullName());
 
-        execute(projectName);
+        execute(projectName, 3, 2);
+        execute(projectName, 4, 1);
+        execute(projectName, 4, 2);
+        execute(projectName, 4, 3);
 
         System.out.println();
         System.out.println("SUCCESS");
     }
 
-    private static void execute(ProjectName projectName) throws IOException {
+    private static void execute(ProjectName projectName, int n, int m) throws IOException {
         int size = 1024;
-
-        int n = 4;
-        int m = 1;
-
 
         BufferedImage img = new BufferedImage(size, size, BufferedImage.TYPE_INT_RGB);
         for (int i = 0; i < size; i++) {
@@ -69,7 +68,7 @@ public class d2ElectronDensity {
             }
         }
 
-        ImageIO.write(img, "png", projectName.getFile("png"));
+        ImageIO.write(img, "png", projectName.getFile("png", "n" + n, "m" + m));
     }
 
     /**

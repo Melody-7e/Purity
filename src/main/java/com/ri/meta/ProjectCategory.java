@@ -8,6 +8,7 @@ public enum ProjectCategory {
     // @formatter:off
     VOID                (0x00),             // VOID or undefined
     SIGNATURE           (0x26),             // Something I found all by myself and consider as signature
+    COPY                (0x27),             // Just copied others invention to experiment
     CLASS_T             (0x41),             // Not nice, not bad, useless and pointless, \and impure\
     CLASS_S             (0x46),             // Ok-ok, nothing very special, \somewhat impure\
     CLASS_C             (0x6a),             // is_nice and is_pure, still something's missing that it doesn't feel much pure.

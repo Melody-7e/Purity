@@ -32,7 +32,7 @@ public class ProjectType {
     public static final ProjectType REAL_VEC4          = new ProjectType(REAL_NUMBER,   REAL_NUMBER,    REAL_NUMBER,    REAL_NUMBER);
 
     public static final ProjectType INT_SERIES         = new ProjectType(FUNCTION,      INT_NUMBER,     INT_NUMBER);
-    public static final ProjectType RI_FUNCTION        = new ProjectType(FUNCTION,      INT_NUMBER,     REAL_NUMBER); // !coincidence ri
+    public static final ProjectType IR_FUNCTION        = new ProjectType(FUNCTION,      INT_NUMBER,     REAL_NUMBER);
     public static final ProjectType CC_FUNCTION        = new ProjectType(FUNCTION,      COMPLEX_NUMBER, COMPLEX_NUMBER);
     public static final ProjectType IMAGE_EFFECT       = new ProjectType(FUNCTION,      IMAGE,          IMAGE);
 
@@ -190,6 +190,7 @@ public class ProjectType {
 
         FUNCTION            ('f', 2),    // (OUTPUT, INPUT)     function that takes INPUT and gives OUTPUT
         EASY_EDIT           ('e', 1),    // (TYPE)              a `type` that let you easily make changes to the TYPE object
+        SET                 ('s', 1),    // (TYPE)              a large set (unordered) of TYPE object, for ordered set use [F<TYPE>n1]
 
         ARRAY               ();
         // @formatter:on

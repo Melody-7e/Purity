@@ -40,11 +40,11 @@ A project can be uniquely located by its category, id and name:
 
 At the end of the day, the naming looks like this
 
-    ([E(Fn1d1)i] <00> 37) Bxn_Bqa_C6 i32
+    ([E(Fd1n1)i] <00> 37) Bxn_Bqa_C6 i32
 
 where
 
-- `E(Fn1d1)` mean an easy-edit (E) function (F) of _int_ (N1) to _sound_ (D1)
+- `E(Fd1n1)` mean an easy-edit (E) function (F) of _sound_ (D1) from _int_ (n1)
 - `i` is PD, LEFT, means Totally Programmable
 - `<00>` category 00 (**VOID**)
 - `37` refers to the id
@@ -52,7 +52,12 @@ where
 
 and for URL's
 
-    ([E(Fn1d1)i] 00-37) Bxn_Bqa_C6 i32
+    ([E(Fd1n1)i] 00-37) Bxn_Bqa_C6 i32.wav
+
+## Rili
+Since I add every successful independent project to the purity project list, 
+it can also include projects from my _rili_ project (and that's private) So,
+ignore them.
 
 ---
 

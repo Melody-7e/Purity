@@ -1,4 +1,3 @@
-# **C** Icons
+# _C_ Icons
 
-_Easy-Edit_ source to generate **C** Icons is available at my _rili_ project.
-
+> Source: _rili_ > riicon > **RiElementIconVectorDrawableGenerator**

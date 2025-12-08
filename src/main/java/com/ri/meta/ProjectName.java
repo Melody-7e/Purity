@@ -117,13 +117,26 @@ public class ProjectName {
         return urlSafeName;
     }
 
-    public File getFile(String extension) {
+    public File getFile(String extension, String... extras) {
         if (extension.startsWith(".")) extension = extension.substring(1);
+
+        StringBuilder extra = new StringBuilder();
+
+        if (extras.length == 1) {
+            extra.append(' ').append(extras[0]);
+        } else if (extras.length > 1) {
+            extra.append(" (");
+            for (int i = 0; i < extras.length - 1; i++) {
+                extra.append(extras[i]).append(";");
+            }
+            extra.append(extras[extras.length - 1]);
+            extra.append(')');
+        }
 
         int i = 0;
         File file;
         do {
-            file = new File(PROJECT_DIR, urlSafeName + ((i != 0) ? " #" + i : "") + '.' + extension);
+            file = new File(PROJECT_DIR, urlSafeName + extra + ((i != 0) ? " #" + i : "") + '.' + extension);
             i++;
         } while (file.exists());
 
