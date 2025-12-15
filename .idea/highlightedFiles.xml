@@ -6,6 +6,7 @@
       <node color="6" path="$PROJECT_DIR$/projects/([D2R-]~ 7e-00) Equation of Life.png" />
       <node color="6" path="$PROJECT_DIR$/projects/([D2R]~ 7e-00) Equation of Life (RIGHT).png" />
       <node color="10" path="$PROJECT_DIR$/projects/([D3i]~ 26-1c) HexRings.mp4" />
+      <node color="15" path="$PROJECT_DIR$/projects/([Ed2i] 2c-74) TileableDepthTexture74.png" />
       <node color="15" path="$PROJECT_DIR$/projects/([Ev2i]~ 26-27) RiIcon.md" />
       <node color="15" path="$PROJECT_DIR$/projects/([Ev2i]~ 26-27) RiIcon.png" />
       <node color="15" path="$PROJECT_DIR$/projects/([Ev2i]~ 26-27) RiIcon.xml" />
@@ -56,6 +57,7 @@
       <node color="16" path="$PROJECT_DIR$/src/main/java/com/ri/meta" />
       <node color="8" path="$PROJECT_DIR$/src/main/java/com/ri/Permu.java" />
       <node color="15" path="$PROJECT_DIR$/src/main/java/com/ri/RiIcon.java" />
+      <node color="15" path="$PROJECT_DIR$/src/main/java/com/ri/TileableDepthTexture74.java" />
     </files>
     <colors>
       <color id="1" value="#003040" name="(Fn.*) Function:Number" enabled="true" />

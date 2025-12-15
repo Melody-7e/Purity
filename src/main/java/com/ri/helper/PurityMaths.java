@@ -4,11 +4,12 @@ import static java.lang.Math.sqrt;
 
 // @formatter:off
 public class PurityMaths {
-    public static final float SQRT_2 = (float) sqrt(2.0);
-    public static final float SQRT_3 = (float) sqrt(3.0);
-    public static final float SQRT_5 = (float) sqrt(5.0);
-    public static final float PHI    = (SQRT_5 + 1) / 2;
-    public static final float PEI    = (float) (1 / (Math.PI * Math.E));
+    public static final float SQRT_2  = (float) sqrt(2.0);
+    public static final float SQRT_3  = (float) sqrt(3.0);
+    public static final float SQRT_5  = (float) sqrt(5.0);
+    public static final float PHI     = (SQRT_5 + 1) / 2;
+    public static final float PEI     = (float) (1 / (Math.PI * Math.E));
+    public static final float EPSILON = 0.000001f;
 
     public static void roundToHex(double x, double y, double a, double[] out) {
         double u = x / a;
@@ -109,6 +110,37 @@ public class PurityMaths {
 
     public static double soundNoteCurve(double x) {
         return Math.pow(x, 0.25) * Math.pow(1 - x, 1.618033) * 2;
+    }
+
+    public static int oklchToSrgb(double L, double C, double h) {
+        // OkLCH --> OkLAB (L, a, b)
+        double hRad = Math.toRadians(h);
+        double a = C * Math.cos(hRad);
+        double b = C * Math.sin(hRad);
+
+        // OkLAB --> RGB Power
+        double l = L + 0.3963377774 * a + 0.2158037573 * b;     double Lr_prime = l * l * l;
+        double m = L - 0.1055613458 * a - 0.0638541728 * b;     double Lg_prime = m * m * m;
+        double s = L - 0.0894841775 * a - 1.2914855480 * b;     double Lb_prime = s * s * s;
+
+        // RGB Power --> RGB Linear
+        double R_lin =  4.0767416621 * Lr_prime - 3.3077115913 * Lg_prime + 0.2309699292 * Lb_prime;
+        double G_lin = -1.2684300755 * Lr_prime + 2.6075737418 * Lg_prime - 0.3391436663 * Lb_prime;
+        double B_lin = -0.0041960863 * Lr_prime - 0.7034186147 * Lg_prime + 1.7076147010 * Lb_prime;
+
+        if (R_lin < -EPSILON || R_lin > 1.0 + EPSILON)
+            throw new IllegalArgumentException("L=" + L + ", C=" + C + ", H=" + h + " " + "-> R=" + R_lin);
+        if (G_lin < -EPSILON || G_lin > 1.0 + EPSILON)
+            throw new IllegalArgumentException("L=" + L + ", C=" + C + ", H=" + h + " " + "-> G=" + G_lin);
+        if (B_lin < -EPSILON || B_lin > 1.0 + EPSILON)
+            throw new IllegalArgumentException("L=" + L + ", C=" + C + ", H=" + h + " " + "-> B=" + B_lin);
+
+        // RGB Linear --> sRGB
+        int R_sRGB = linearToSrgb((float) R_lin);
+        int G_sRGB = linearToSrgb((float) G_lin);
+        int B_sRGB = linearToSrgb((float) B_lin);
+
+        return R_sRGB << 16 | G_sRGB << 8 | B_sRGB;
     }
 }
 // @formatter:on
