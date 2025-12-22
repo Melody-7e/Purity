@@ -1,0 +1,36 @@
+0 (Euler-Mascheroni constant) / C4
+93c4 67e3  7db0 c7a4  d1be 3f81  0152 cb56
+a1ce cc3a  f65c c019  0c03 df34  709a ffbd
+8e4b 59fa  03a9 f0ee  d064 9ccb  6210 57d1
+1056 ae91  3213 5a08  e43b 4673  d74b afea
+
+1 (Golden Ratio) / C2
+9e37 79b9  7f4a 7c15  f39c c060  5ced c834
+1082 276b  f3a2 7251  f86c 6a11  d0c1 8e95
+2767 f0b1  53d2 7b7f  0347 045b  5bf1 827f
+0188 6f09  2840 3002  c1d6 4ba4  0f33 5e36
+
+2 (Euler's number) / C0
+b7e1 5162  8aed 2a6a  bf71 5880  9cf4 f3c7
+62e7 160f  38b4 da56  a784 d904  5190 cfef
+324e 7738  926c fbe5  f4bf 8d8d  8c31 d763
+da06 c80a  bb11 85eb  4f7c 7b57  57f5 9584
+
+3 (Pi) / C3
+243f 6a88  85a3 08d3  1319 8a2e  0370 7344
+a409 3822  299f 31d0  082e fa98  ec4e 6c89
+4528 21e6  38d0 1377  be54 66cf  34e9 0c6c
+c0ac 29b7  c97c 50dd  3f84 d5b5  b547 0917
+
+4 (First Feigenbaum Constant) / C5
+ab50 cbf1  8725 d1d1  c04e d45a  e264 3f68
+0886 03c5  8098 9caa  8f45 1de9  0ba3 7707
+d31b d6d4  6fbf acf4  c595 b7bc  a65c e574
+7d52 9db0  05d3 38f8  3dbb 5ae2  b068 db5d
+
+5 (Gamma of 1/6) / C1
+90fa 15e2  d8fb 86a4  c6b7 ee8e  1496 839c
+f4ec 1c55  a41a 20d1  4950 58b9  0808 0eb5
+ac92 e6bb  1543 5041  a4c4 68f1  d18c 5ca7
+d1ef cf8f  eebe 3f8c  ac23 adde  5dad af3c
+
