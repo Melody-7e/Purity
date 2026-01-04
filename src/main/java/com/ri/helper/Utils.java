@@ -1,12 +1,13 @@
 package com.ri.helper;
 
-import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.Buffer;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.MessageDigest;
+import java.security.SecureRandom;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
@@ -15,6 +16,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.GCMParameterSpec;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 import ws.schild.jave.Encoder;
 import ws.schild.jave.MultimediaObject;
@@ -28,6 +34,8 @@ public class Utils {
     private static final String MSG_FORMAT = "%-32s";
     private static final Object progressLock = new Object();
     private static final int totalLoopCalculations = 4096;
+    private static final SecureRandom secureRandom = new SecureRandom();
+
 
 
     public static void loopWithProgress(Loopable l, int max, String msg) {
@@ -168,6 +176,42 @@ public class Utils {
         });
 
         finishMsg(startTime, msg);
+    }
+
+    public static byte[] hash(String data) throws Exception {
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        return md.digest(data.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public static byte[] hash(File file) throws Exception {
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+
+        try (FileInputStream fis = new FileInputStream(file)) {
+            return md.digest(fis.readAllBytes());
+        }
+    }
+
+    public static byte[] decrypt(byte[] data, byte[] key) throws Exception {
+        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+        cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, "AES"), new GCMParameterSpec(128, data, 0, 16));
+
+        return cipher.doFinal(data, 16, data.length - 16);
+    }
+
+    public static byte[] encrypt(byte[] data, byte[] key) throws Exception {
+        byte[] iv = new byte[16];
+        secureRandom.nextBytes(iv);
+
+        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+        cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, "AES"), new GCMParameterSpec(128, iv));
+
+        byte[] encrypted = cipher.doFinal(data);
+
+        byte[] full = new byte[encrypted.length + iv.length];
+        System.arraycopy(iv, 0, full, 0, iv.length);
+        System.arraycopy(encrypted, 0, full, iv.length, encrypted.length);
+
+        return full;
     }
 
     private static void progressMsg(long start, float done, String msg) {

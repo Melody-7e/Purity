@@ -117,9 +117,43 @@ public class ProjectName {
         return urlSafeName;
     }
 
+    public String getFullId() {
+        return String.format("([%s%s]%s <%02x> %02x)", type.getCode(), pd.symbol(), state.symbol(), category.value(), id);
+    }
+
+    public File getFile() {
+        File file =  new File(PROJECT_DIR, urlSafeName);
+
+        if (!file.exists()) {
+            throw new RuntimeException("File does not exist: " + file.getAbsolutePath());
+        }
+
+        return file;
+    }
+
     public File getFile(String extension, String... extras) {
         if (extension.startsWith(".")) extension = extension.substring(1);
 
+        String extra = getExtrasString(extras);
+
+        int i = 0;
+        File file;
+        do {
+            file = new File(PROJECT_DIR, urlSafeName + extra + ((i != 0) ? " #" + i : "") + '.' + extension);
+            i++;
+        } while (file.exists());
+
+        return file;
+    }
+
+    public File getAppendFile(String extension, String... extras) {
+        if (extension.startsWith(".")) extension = extension.substring(1);
+
+        String extra = getExtrasString(extras);
+        return new File(PROJECT_DIR, urlSafeName + extra + '.' + extension);
+    }
+
+    private static String getExtrasString(String[] extras) {
         StringBuilder extra = new StringBuilder();
 
         if (extras.length == 1) {
@@ -132,15 +166,7 @@ public class ProjectName {
             extra.append(extras[extras.length - 1]);
             extra.append(')');
         }
-
-        int i = 0;
-        File file;
-        do {
-            file = new File(PROJECT_DIR, urlSafeName + extra + ((i != 0) ? " #" + i : "") + '.' + extension);
-            i++;
-        } while (file.exists());
-
-        return file;
+        return extra.toString();
     }
 
     @Override

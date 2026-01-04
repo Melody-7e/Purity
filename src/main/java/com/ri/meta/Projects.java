@@ -148,4 +148,8 @@ public class Projects {
 
         return results;
     }
+
+    public ArrayList<ProjectName> getProjectNames() {
+        return projectNames;
+    }
 }
