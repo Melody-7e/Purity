@@ -8,8 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
-import java.util.Comparator;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -19,13 +18,11 @@ import java.util.stream.Stream;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.GCMParameterSpec;
-import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import ws.schild.jave.Encoder;
 import ws.schild.jave.MultimediaObject;
-import ws.schild.jave.encode.EncodingAttributes;
-import ws.schild.jave.encode.VideoAttributes;
+import ws.schild.jave.encode.*;
 import ws.schild.jave.encode.enums.TuneEnum;
 import ws.schild.jave.info.MultimediaInfo;
 import ws.schild.jave.progress.EncoderProgressListener;
@@ -143,11 +140,11 @@ public class Utils {
         float duration = (float) Objects.requireNonNull(srcDir.listFiles()).length / frameRate;
 
         VideoAttributes videoAttrs = new VideoAttributes();
+        videoAttrs.setFrameRate(frameRate);
+        videoAttrs.setCrf(16);
         videoAttrs.setCodec("libx264");
         videoAttrs.setPixelFormat("yuv420p");
-        videoAttrs.setTune(TuneEnum.ZEROLATENCY);
-        videoAttrs.setQuality(Integer.MAX_VALUE);
-        videoAttrs.setFrameRate(frameRate);
+        videoAttrs.setTune(TuneEnum.FILM);
 
         EncodingAttributes attrs = new EncodingAttributes();
         attrs.setVideoAttributes(videoAttrs);
@@ -156,11 +153,14 @@ public class Utils {
         attrs.setDuration(duration);
 
 
+        List<EncodingArgument> arguments = new ArrayList<>();
+        arguments.add(new ValueArgument(ArgType.INFILE, "-r", ea -> Optional.of(Integer.toString(frameRate))));
+
         MultimediaObject srcObjects = new MultimediaObject(new File(srcDir, "%d.png"));
         srcObjects.setReadURLOnce(true);
 
         Encoder encoder = new Encoder();
-        encoder.encode(srcObjects, dstFile, attrs, new EncoderProgressListener() {
+        encoder.encode(Collections.singletonList(srcObjects), dstFile, attrs, new EncoderProgressListener() {
             @Override
             public void sourceInfo(MultimediaInfo info) {
             }
@@ -173,7 +173,7 @@ public class Utils {
             @Override
             public void message(String message) {
             }
-        });
+        }, arguments);
 
         finishMsg(startTime, msg);
     }

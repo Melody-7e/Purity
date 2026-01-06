@@ -45,14 +45,13 @@ public class HexRings {
     private static void execute(ProjectName projectName) throws Exception {
         imgDir = Files.createTempDirectory(HexRings.class.getSimpleName()).toFile();
 
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> Utils.deleteDir(imgDir)));
+
         Utils.loopWithProgressParallel(HexRings::createImage, fps * length, "Writing Images");
-
         Utils.encodeVideo(projectName.getFile("mp4"), imgDir, fps);
-
-        Utils.deleteDir(imgDir);
     }
 
-    private static void createImage(int frame) {
+    private static void createImage(int frame) throws IOException {
         BufferedImage img = new BufferedImage(size, size, BufferedImage.TYPE_INT_RGB);
         double[] o = new double[2];
 
@@ -68,10 +67,6 @@ public class HexRings {
             }
         }
 
-        try {
-            ImageIO.write(img, "png", new File(imgDir, frame + ".png"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        ImageIO.write(img, "png", new File(imgDir, frame + ".png"));
     }
 }

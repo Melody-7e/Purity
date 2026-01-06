@@ -5,6 +5,7 @@
       <node color="2" path="$PROJECT_DIR$/projects/([D1i] 41-76) Ius_Ymr_Ut76.wav" />
       <node color="6" path="$PROJECT_DIR$/projects/([D2R-]~ 7e-00) Equation of Life.png" />
       <node color="6" path="$PROJECT_DIR$/projects/([D2R]~ 7e-00) Equation of Life (RIGHT).png" />
+      <node color="10" path="$PROJECT_DIR$/projects/([D3i]# 00-6c) sM9230LAF3_6c.mp4" />
       <node color="10" path="$PROJECT_DIR$/projects/([D3i]~ 26-1c) HexRings.mp4" />
       <node color="15" path="$PROJECT_DIR$/projects/([Ed2i] 2c-74) TileableDepthTexture74.png" />
       <node color="15" path="$PROJECT_DIR$/projects/([Ev2i]~ 26-27) RiIcon.md" />
@@ -62,6 +63,7 @@
       <node color="16" path="$PROJECT_DIR$/src/main/java/com/ri/meta" />
       <node color="8" path="$PROJECT_DIR$/src/main/java/com/ri/Permu.java" />
       <node color="15" path="$PROJECT_DIR$/src/main/java/com/ri/RiIcon.java" />
+      <node color="10" path="$PROJECT_DIR$/src/main/java/com/ri/sM9230LAF3_6c.java" />
       <node color="15" path="$PROJECT_DIR$/src/main/java/com/ri/TileableDepthTexture74.java" />
     </files>
     <colors>
