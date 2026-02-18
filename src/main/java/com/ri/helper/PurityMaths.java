@@ -112,7 +112,7 @@ public class PurityMaths {
     }
 
     public static double soundNoteCurve(double x) {
-        return Math.pow(x, 0.25) * Math.pow(1 - x, 1.618033) * 2;
+        return Math.pow(x, 0.25) * Math.pow(1 - x, PHI) * 2;
     }
 
     public static void srgbToOklab(int srgb, float[] oklab, int labIdx) {

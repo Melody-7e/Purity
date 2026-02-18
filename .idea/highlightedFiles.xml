@@ -3,6 +3,7 @@
   <component name="ProjectTreeColorHighlighter">
     <files>
       <node color="2" path="$PROJECT_DIR$/projects/([D1i] 41-76) Ius_Ymr_Ut76.wav" />
+      <node color="2" path="$PROJECT_DIR$/projects/([D1i] 41-a6) MusicS6_a6.wav" />
       <node color="6" path="$PROJECT_DIR$/projects/([D2R-]~ 7e-00) Equation of Life.png" />
       <node color="6" path="$PROJECT_DIR$/projects/([D2R]~ 7e-00) Equation of Life (RIGHT).png" />
       <node color="10" path="$PROJECT_DIR$/projects/([D3i]# 00-6c) sM9230LAF3_6c.mp4" />
@@ -32,6 +33,7 @@
       <node color="5" path="$PROJECT_DIR$/projects/([Fd2d2i]~ 26-02) SBloom.md" />
       <node color="1" path="$PROJECT_DIR$/projects/([Fn1n2i]~ 26-42) Exp2Sequence.txt" />
       <node color="13" path="$PROJECT_DIR$/projects/([Ft1t1i] 26-e3) RiSerializationFormat.md" />
+      <node color="13" path="$PROJECT_DIR$/projects/([Ft1t2i+]# 2c-c7) Code775_c7.md" />
       <node color="13" path="$PROJECT_DIR$/projects/([Ft1t2i+] 2c-c7) Code775_c7.md" />
       <node color="14" path="$PROJECT_DIR$/projects/([M0i]# 6a-32) GameKyz32.png" />
       <node color="14" path="$PROJECT_DIR$/projects/([M0R]~ 7e-7e) MELODY.md" />
@@ -63,6 +65,7 @@
       <node color="2" path="$PROJECT_DIR$/src/main/java/com/ri/Ius_Ymr_Ut76.java" />
       <node color="8" path="$PROJECT_DIR$/src/main/java/com/ri/Jam_Und_Fu58.java" />
       <node color="16" path="$PROJECT_DIR$/src/main/java/com/ri/meta" />
+      <node color="2" path="$PROJECT_DIR$/src/main/java/com/ri/MusicS6_a6.java" />
       <node color="8" path="$PROJECT_DIR$/src/main/java/com/ri/Permu.java" />
       <node color="15" path="$PROJECT_DIR$/src/main/java/com/ri/RiIcon.java" />
       <node color="10" path="$PROJECT_DIR$/src/main/java/com/ri/sM9230LAF3_6c.java" />
