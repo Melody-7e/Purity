@@ -32,7 +32,14 @@ public final class Code775_c7 {
             new String[]{
                     "5",
                     "5645",
-                    "5645342378675645"
+                    "5645342378675645",
+                    // 564534237867564589786756ab9a8978231201(-1)0453423125645342378675645
+            },
+            new String[]{
+                    "1",
+                    "12123434",
+                    "1212343412123434",
+                    // "1212343412123434565678785656787812123434121234345656787856567878",
             },
             new String[]{
                     "1618",         // phi
@@ -42,7 +49,7 @@ public final class Code775_c7 {
     };
 
     private static final   char[] SEPARATOR_H    = new   char[]{'?',   '.',   '-',   ')'};
-    private static final   char[] SUFFIX_START_S = new   char[]{'R',   'i',   'm',   'c'};
+    private static final   char[] SUFFIX_START_S = new   char[]{'R',   'i',   'm',   'c',   'v'};
     private static final String[] SUFFIX_END_L   = new String[]{"126", "7e",  "~"};
 
     private static final     char END_SEPARATOR  = '|';

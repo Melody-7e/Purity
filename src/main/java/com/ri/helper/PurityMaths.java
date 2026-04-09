@@ -14,6 +14,27 @@ public class PurityMaths {
     public static final float PEI     = (float) (1 / (Math.PI * Math.E));
     public static final float EPSILON = 0.000001f;
 
+    public static float ema(float previous, float current, float tpf) {
+        float factor = (float) Math.exp(-tpf);
+        return current + (previous - current) * factor;
+    }
+
+    public static float mixColor(int rgb1, int rgb2, float t) {
+        int r1 = (rgb1 >> 16) & 0xff;
+        int g1 = (rgb1 >> 8) & 0xff;
+        int b1 = (rgb1) & 0xff;
+
+        int r2 = (rgb2 >> 16) & 0xff;
+        int g2 = (rgb2 >> 8) & 0xff;
+        int b2 = (rgb2) & 0xff;
+
+        int r = (int)(r1 * (1 - t) + r2 * t);
+        int g = (int)(g1 * (1 - t) + g2 * t);
+        int b = (int)(b1 * (1 - t) + b2 * t);
+
+        return r << 16 | g << 8 | b;
+    }
+
     public static void roundToHex(double x, double y, double a, double[] out) {
         double u = x / a;
         double v = y / a;
