@@ -27,14 +27,12 @@ public class Reminder4c extends JFrame {
 
     private static final Font           FONT     = new Font("Arial", Font.PLAIN, 16);
     private static final Font           FONT2    = new Font("Arial", Font.PLAIN, 48);
-    private static final AlphaComposite SRC_OVER = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1);
-    private static final AlphaComposite SRC      = AlphaComposite.getInstance(AlphaComposite.SRC, 1);
 
     static {
-        events.add(new Event("-23-", 0.0f, 23*60, 23, 2*60, 0));
-        events.add(new Event("-57-", 150f, 57*60, 37, 8*60, 7));
-        events.add(new Event("Rand", 240f, 30*60, 30, 60*60, 20));
-        events.add(new Event("_Fcs", 51.f, 40*60, 2*60, 6*60, 60));
+        events.add(new Event("-20-", 0.0f, 20*60, 20, 2*60, 0));
+        // events.add(new Event("-57-", 150f, 57*60, 37, 8*60, 7));
+        // events.add(new Event("Rand", 240f, 30*60, 72, 60*60, 40));
+        // events.add(new Event("_Fcs", 51.f, 40*60, 2*60, 6*60, 60));
     }
 
     private final Random random = new Random();
@@ -60,13 +58,13 @@ public class Reminder4c extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         BufferedImage icon = new BufferedImage(s, s, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = icon.createGraphics();
+        Graphics2D    g    = icon.createGraphics();
         for (int i = 0; i < 6; i++) {
-            g.setColor(new Color(PurityMaths.oklchToSrgb(L, C, 8.74 + i * 60)));
+            g.setColor(new Color(PurityMaths.oklchToSrgb(L, C, 8.74 + i*60)));
             g.fillArc(0, 0, s, s, i*60 - 26, 52);
         }
 
-        g.setComposite(SRC);
+        g.setComposite(AlphaComposite.Src);
         g.setColor(new Color(0, 0, 0, 0));
         g.fillOval(s/7, s/7, s - 2*s/7, s - 2*s/7);
 
@@ -87,8 +85,16 @@ public class Reminder4c extends JFrame {
 
         setAlwaysOnTop(true);
         setLocationRelativeTo(null);
+        setType(Type.UTILITY);
 
-        Timer timer = new Timer(60, e -> repaint());
+        Timer timer = new Timer(
+                60,
+                _ -> {
+                    float t = (System.currentTimeMillis() - startTime)/1000f;
+                    if (t > eventTime + eventDuration) nextEvent();
+                    repaint();
+                }
+        );
         MouseAdapter mouseHandler = new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 if (!pause && e.getButton() == MouseEvent.BUTTON3) {
@@ -141,30 +147,6 @@ public class Reminder4c extends JFrame {
         timer.start();
     }
 
-    private void setPause(boolean shallPause, Timer timer) {
-        pause = shallPause;
-
-        if (pause) {
-            setBlock(false);
-
-            pauseTime = System.currentTimeMillis();
-            timer.stop();
-            repaint();
-        } else {
-            startTime += System.currentTimeMillis() - pauseTime;
-            timer.restart();
-        }
-    }
-
-    private void setBlock(boolean shallBlock) {
-        block = shallBlock;
-        setExtendedState(block? MAXIMIZED_BOTH : NORMAL);
-
-        if (!block) {
-            setLocation(posX, posY);
-        }
-    }
-
     public static void main(String[] args)
             throws Exception
     {
@@ -175,12 +157,15 @@ public class Reminder4c extends JFrame {
     public void paint(Graphics g) {
         super.paint(g);
 
-        float       t = (System.currentTimeMillis() - startTime)/1000f;
-        final float A = eventTime - eventDelay/12f;
-        final float B = eventTime - eventDelay/36f;
+        float t = (System.currentTimeMillis() - startTime)/1000f;
+        float A = eventTime - eventDelay/12f;
+        float B = eventTime - eventDelay/36f;
 
         ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        ((Graphics2D) g).setComposite(SRC);
+        ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
+        ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_SPEED);
+        ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
+        ((Graphics2D) g).setComposite(AlphaComposite.Src);
         ((Graphics2D) g).setStroke(stroke5);
 
         if (block) {
@@ -256,7 +241,7 @@ public class Reminder4c extends JFrame {
             intensity = 0.5f;
         }
 
-        ((Graphics2D) g).setComposite(SRC_OVER);
+        ((Graphics2D) g).setComposite(AlphaComposite.SrcOver);
         for (int i = 0; i < 3; i++) {
             float k = (t/4f + i/3f)%1;
 
@@ -296,6 +281,30 @@ public class Reminder4c extends JFrame {
             g.setFont(FONT);
             g.setColor(Color.WHITE);
             g.drawString(eventName, s/2 - getFontMetrics(FONT).stringWidth(eventName)/2, s + 16);
+        }
+    }
+
+    private void setPause(boolean shallPause, Timer timer) {
+        pause = shallPause;
+
+        if (pause) {
+            setBlock(false);
+
+            pauseTime = System.currentTimeMillis();
+            timer.stop();
+            repaint();
+        } else {
+            startTime += System.currentTimeMillis() - pauseTime;
+            timer.restart();
+        }
+    }
+
+    private void setBlock(boolean shallBlock) {
+        block = shallBlock;
+        setExtendedState(block? MAXIMIZED_BOTH : NORMAL);
+
+        if (!block) {
+            setLocation(posX, posY);
         }
     }
 

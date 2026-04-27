@@ -1,0 +1,31 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Decorate5c:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Decorate5c_jar</output-path>
+    <root id="archive" name="Dc5c.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/src/main/java/com/ri/decorate5c/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="Purity.main" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/ws.schild/jave-nativebin-win64/3.5.0/d230957906e8b094f984b0ed72bc3eb06b53caf5/jave-nativebin-win64-3.5.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.opentest4j/opentest4j/1.3.0/152ea56b3a72f655d4fd677fc0ef2596c3dd5e6e/opentest4j-1.3.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/ws.schild/jave-core/3.5.0/3d1a79783464ce9ee5be45c909fa91d24b2d5c12/jave-core-3.5.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/ws.schild/jave-nativebin-linux-arm64/3.5.0/cdc699d8019cacbaa7c62bf51b91805ce4f8f93d/jave-nativebin-linux-arm64-3.5.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.10.1/b3add478d4382b78ea20b1671390a858002feb6c/gson-2.10.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.microsoft.playwright/playwright/1.42.0/6338b8b9a5c9dd6cc0c9420ae9c68260d08974d3/playwright-1.42.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/2.0.17/d9e58ac9c7779ba3bf8142aff6c830617a7fe60f/slf4j-api-2.0.17.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.microsoft.playwright/driver-bundle/1.42.0/1c4c197df60fd5101293936d91856e41c466cb68/driver-bundle-1.42.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/ws.schild/jave-nativebin-win32/3.5.0/28967a47da033cbd1f00312739625a7d02373b0f/jave-nativebin-win32-3.5.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/ws.schild/jave-nativebin-linux32/3.5.0/c99c010f22ec0977dfe92866e04c4970a7267eab/jave-nativebin-linux32-3.5.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/ws.schild/jave-nativebin-osxm1/3.5.0/b56b869b722b1feeeb2e1bc66a2fbebde31b3a96/jave-nativebin-osxm1-3.5.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/ws.schild/jave-nativebin-linux64/3.5.0/d496379b423092e83f7f226d85e6cd2973d31005/jave-nativebin-linux64-3.5.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.microsoft.playwright/driver/1.42.0/9b15ad058e5280fab78daa4cf5040cac44ef2519/driver-1.42.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/ws.schild/jave-all-deps/3.5.0/58cb14594dc90bdbc648d4327c716a2494cc74c8/jave-all-deps-3.5.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.netbeans.external/com-google-gson/RELEASE113/f645ed69d595b24d4cf8b3fbb64cc505bede8829/com-google-gson-RELEASE113.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/ws.schild/jave-nativebin-linux-arm32/3.5.0/697b3f8f921dad75bbf7a276faf71025ec4316d6/jave-nativebin-linux-arm32-3.5.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/ws.schild/jave-nativebin-osx64/3.5.0/c5c57ec7917d0ffb84257407511faf805c31f2df/jave-nativebin-osx64-3.5.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-nop/2.0.17/b41773047e10359aa409e7197c7624aeabfd377c/slf4j-nop-2.0.17.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jsoup/jsoup/1.22.2/3e7aa5e79f51efa3d0ec15140e186140173119f7/jsoup-1.22.2.jar" path-in-jar="/" />
+      <element id="file-copy" path="$PROJECT_DIR$/projects/([Ev2i]~ 26-27) RiIcon.png" output-file-name="icon.png" />
+    </root>
+  </artifact>
+</component>

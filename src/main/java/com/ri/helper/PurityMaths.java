@@ -19,6 +19,10 @@ public class PurityMaths {
         return current + (previous - current) * factor;
     }
 
+    public static float fade(float x) {
+        return x * x * x * (x * (x * 6 - 15) + 10);
+    }
+
     public static float mixColor(int rgb1, int rgb2, float t) {
         int r1 = (rgb1 >> 16) & 0xff;
         int g1 = (rgb1 >> 8) & 0xff;
@@ -157,11 +161,7 @@ public class PurityMaths {
         oklab[labIdx + 2] = (float) (0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s); // b
     }
 
-    public static int oklabToSrgb(float[] oklab, int labIdx, boolean throwError) {
-        double L = oklab[labIdx];
-        double a = oklab[labIdx + 1];
-        double b = oklab[labIdx + 2];
-
+    public static int oklabToSrgb(double L, double a, double b, boolean throwError) {
         // OkLAB --> RGB Power
         double l = L + 0.3963377774 * a + 0.2158037573 * b;     double Lr_prime = l * l * l;
         double m = L - 0.1055613458 * a - 0.0638541728 * b;     double Lg_prime = m * m * m;

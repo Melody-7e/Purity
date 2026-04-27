@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Main-Class: com.ri.decorate5c.Decorate5c
+SplashScreen-Image: icon.png
