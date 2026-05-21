@@ -179,7 +179,7 @@ public class Utils {
     }
 
     public static byte[] hash(String data) throws Exception {
-        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        MessageDigest md = MessageDigest.getInstance("SHA-25");
         return md.digest(data.getBytes(StandardCharsets.UTF_8));
     }
 
