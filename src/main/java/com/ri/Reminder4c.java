@@ -85,7 +85,7 @@ public class Reminder4c extends JFrame {
 
         setAlwaysOnTop(true);
         setLocationRelativeTo(null);
-        setType(Type.UTILITY);
+        // setType(Type.UTILITY);
 
         Timer timer = new Timer(
                 60,

@@ -28,13 +28,13 @@ import javax.swing.Timer;
  *     <li><b>Drag</b>: Draws a line of hearts</li>
  *     <li></li>
  *     <li><b>Ctrl+Click</b>: Select the image
- *     (like you clicked on the image on pinterest so it recommend more similar images)
+ *     (like you clicked on the image on pinterest so it recommends more similar images)
  *     </li>
  *     <li><b>Shift+Click</b>: Save current image in {@link ImageLoader#OFFLINE_FILES}, (Shift+Ctrl+Click selects and saves both)</li>
- *     <li><b>Alt+Click</b>: Unselect the image (go back to home page, if images are not loading, click it)</li>
+ *     <li><b>Alt+Click</b>: Unselect the image (go back to the home page, if images are not loading, click it)</li>
  *     <li></li>
  *     <li><b>Middle Click</b>: Next image (that automatically happens in some time, but to force it)</li>
- *     <li><b>Right Click</b>: Pause it (no refreshes, well it doesn't quite save resources, so just click it for that)</li>
+ *     <li><b>Right Click</b>: Pause it (no refreshes, well, it doesn't quite save resources, so just click it for that)</li>
  *     <li></li>
  *     <li><b>Ctrl+Right Click</b>: Toggle {@link #setFocusableWindowState}</li>
  *     <li><b>Shift+Right Click</b>: Toggle {@link #setAlwaysOnTop}</li>
@@ -55,12 +55,12 @@ public class Decorate5c extends JFrame {
     public static final double L                      = 0.75126;
     public static final double C                      = 0.126;
     public static final int    MIN_POINT_DISTANCE     = 8;
-    public static final int    IMAGE_REFRESH_DURATION = 1000*60*6; // 6 min
+    public static final int    IMAGE_REFRESH_DURATION = 1000*60*5; // 6 min
     public static final int    TRANSITION_DURATION    = 2000;
 
     public static final  int       w    = 360; // @see ImageLoader#HIGH_RES
     public static final  int       h    = 720;
-    private static final Dimension SIZE = new Dimension(w, h);
+    private static final Dimension SIZE = new Dimension(w, h + InfoPanel.FONT_SIZE);
 
     final ArrayList<EffectPanel.Effect> effects = new ArrayList<>();
 
@@ -101,7 +101,7 @@ public class Decorate5c extends JFrame {
         ImagePanel  imagePanel  = new ImagePanel(this);
         EffectPanel effectPanel = new EffectPanel(this);
 
-        Timer timer = createTimer(imageLoader, imagePanel);
+        Timer timer = createTimer(imageLoader, imagePanel, infoPanel);
 
         Runnable refreshEffect = new Runnable() {
             @Override
@@ -128,6 +128,7 @@ public class Decorate5c extends JFrame {
                     }
                     if (!e.isShiftDown() && !e.isControlDown()) {
                         setPause(!pause, timer);
+                        infoPanel.setPause(pause);
                     }
                 } else if (e.getButton() == MouseEvent.BUTTON2) {
                     if (e.isShiftDown() && e.isControlDown()) {
@@ -143,17 +144,16 @@ public class Decorate5c extends JFrame {
                         long    startTime = System.currentTimeMillis();
                         boolean extra     = false;
                         if (e.isShiftDown()) {
-                            imageLoader.save(image);
+                            if (imageLoader.save(image)) {
+                                effects.add(new EffectPanel.Effect(
+                                        new Point(e.getX(), e.getY()),
+                                        new Color(0xFFFFFF), startTime, 1800
+                                ));
 
-                            effects.add(new EffectPanel.Effect(
-                                    new Point(e.getX(), e.getY()),
-                                    new Color(0xFFFFFF), startTime, 1800
-                            ));
+                                infoPanel.update(false, imageLoader.isOnline(), imageLoader.isDownloaded(), imageLoader.numImages());
+                            }
                         }
-                        if (e.isControlDown()) {
-                            imageLoader.select();
-                            extra = true;
-                        }
+                        if (e.isControlDown() && imageLoader.select()) extra = true;
 
                         if (Math.random() < 0.5) {
                             for (int i = 0; i < heartCoordinates.length/2; i++) {
@@ -275,7 +275,7 @@ public class Decorate5c extends JFrame {
         setLayout(null);
         imagePanel.setBounds(0, 0, w, h);
         effectPanel.setBounds(0, 0, w, h);
-        infoPanel.setBounds(0, 0, w, h);
+        infoPanel.setBounds(0, 0, w, h + InfoPanel.FONT_SIZE);
         add(effectPanel);
         add(imagePanel);
         add(infoPanel);
@@ -292,7 +292,7 @@ public class Decorate5c extends JFrame {
         new Decorate5c().setVisible(true);
     }
 
-    private Timer createTimer(final ImageLoader imageLoader, final ImagePanel imagePanel) {
+    private Timer createTimer(final ImageLoader imageLoader, final ImagePanel imagePanel, final InfoPanel infoPanel) {
         Timer timer = new Timer(
                 IMAGE_REFRESH_DURATION, _ -> {
             long t = System.currentTimeMillis();
@@ -309,6 +309,9 @@ public class Decorate5c extends JFrame {
             imgX     = imgY = 0;
             imgScale = 24/23f;
             image    = imageLoader.nextImage();
+
+            infoPanel.update(true, imageLoader.isOnline(), imageLoader.isDownloaded(), imageLoader.numImages());
+
             imagePanel.repaint();
         }
         );

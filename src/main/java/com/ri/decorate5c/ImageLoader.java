@@ -18,12 +18,13 @@ import java.util.*;
 import javax.imageio.ImageIO;
 
 public class ImageLoader implements Closeable {
-    public static final boolean HIGH_RES      = false;
-    public static final float   MIN_ASPECT    = 0.3f;
-    public static final float   MAX_ASPECT    = 0.9f;
     public static final boolean OFFLINE_MODE  = false;
     public static final File    OFFLINE_FILES = new File(System.getProperty("user.home"), // or use Projects.PROJECT_DIR
                                                          "Desktop/Wallpaper/decorate5c_offlines/");
+
+    public static final boolean HIGH_RES      = false;
+    public static final float   MIN_ASPECT    = 0.3f;
+    public static final float   MAX_ASPECT    = 0.9f;
 
     private static final String URL   = "https://in.pinterest.com/";
     private static final String AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36";
@@ -33,7 +34,7 @@ public class ImageLoader implements Closeable {
     private final Page       page;
 
     private final File             directory;
-    private final Queue<ImagePath> imagePaths = new LinkedList<>();
+    private final Stack<ImagePath> imagePaths = new Stack<>();
     private final File[]           offlinePaths;
 
     private String        selectedUrl  = URL;
@@ -62,10 +63,19 @@ public class ImageLoader implements Closeable {
 
         try {
             directory = Files.createTempDirectory("Decorate4c").toFile();
-            directory.deleteOnExit();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        Thread.UncaughtExceptionHandler uncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler();
+        Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
+            try {
+                Files.delete(directory.toPath());
+            } catch (IOException _) {;
+            }
+
+            uncaughtExceptionHandler.uncaughtException(t, e);
+        });
 
         ArrayList<File> offlineFiles = new ArrayList<>(Arrays.stream(Objects.requireNonNull(OFFLINE_FILES.listFiles()))
                                                       .filter(p -> p.getName().matches(".*\\.(png|jpg|jpeg|webp|gif)"))
@@ -172,9 +182,27 @@ public class ImageLoader implements Closeable {
         playwright.close();
     }
 
-    void select() {
+    boolean isOnline() {
+        return currentUrl != null;
+    }
+
+    boolean isDownloaded() {
+        if (currentUrl == null) return true;
+        File file = new File(
+                OFFLINE_FILES,
+                currentUrl.replace("https://", "").replaceAll("['\"/\\\\<>|]", "-") + ".png"
+        );
+        return file.exists();
+    }
+
+    int numImages() {
+        return imagePaths.size() /*+ (cachedUrl != null ? 1 : 0)*/;
+    }
+
+    boolean select() {
         needRefresh = true;
         if (currentUrl != null) selectedUrl = currentUrl;
+        return currentUrl != null;
     }
 
     void unselect() {
@@ -182,23 +210,25 @@ public class ImageLoader implements Closeable {
         selectedUrl = URL;
     }
 
-    void save(BufferedImage img) {
-        if (currentUrl == null) return;
+    boolean save(BufferedImage img) {
+        if (currentUrl == null) return false;
         try {
             File output = new File(
                     OFFLINE_FILES,
                     currentUrl.replace("https://", "").replaceAll("['\"/\\\\<>|]", "-") + ".png"
             );
+            if (output.exists()) return false;
             ImageIO.write(
                     img, "png", output
             );
+            return true;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     BufferedImage nextImage() {
-        if (!loading && !OFFLINE_MODE && imagePaths.size() < 6) {
+        if (!loading && (!OFFLINE_MODE && imagePaths.size() < 6 || needRefresh)) {
             loading = true;
 
             System.out.println("loading");
@@ -231,15 +261,16 @@ public class ImageLoader implements Closeable {
             return;
         }
 
-        ImagePath imagePath = imagePaths.poll();
         try {
-            if (imagePath != null) {
+            if (!imagePaths.empty()){
+                ImagePath imagePath = imagePaths.pop();
                 cachedUrl = imagePath.link;
 
                 BufferedImage image = ImageIO.read(imagePath.path);
                 boolean       _     = imagePath.path.delete();
                 cachedImage = image;
             } else {
+                cachedUrl = null;
                 cachedImage = nextOfflineFile();
             }
         } catch (IOException e) {
