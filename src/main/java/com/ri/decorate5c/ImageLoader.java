@@ -62,7 +62,7 @@ public class ImageLoader implements Closeable {
         String sess = Objects.requireNonNull(LocalVariables.get("decorate5c_pinterest_sess"));
 
         try {
-            directory = Files.createTempDirectory("Decorate4c").toFile();
+            directory = Files.createTempDirectory("Decorate5c").toFile();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -70,8 +70,11 @@ public class ImageLoader implements Closeable {
         Thread.UncaughtExceptionHandler uncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
             try {
-                Files.delete(directory.toPath());
-            } catch (IOException _) {;
+                if (directory.exists()) {
+                    Files.delete(directory.toPath());
+                }
+            } catch (IOException err) {
+                err.printStackTrace();
             }
 
             uncaughtExceptionHandler.uncaughtException(t, e);
@@ -228,7 +231,7 @@ public class ImageLoader implements Closeable {
     }
 
     BufferedImage nextImage() {
-        if (!loading && (!OFFLINE_MODE && imagePaths.size() < 6 || needRefresh)) {
+        if (!loading && (!OFFLINE_MODE && (imagePaths.size() < 6 || needRefresh))) {
             loading = true;
 
             System.out.println("loading");

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JFrame;
+import javax.swing.JRootPane;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
@@ -93,7 +94,10 @@ public class Decorate5c extends JFrame {
         setPreferredSize(SIZE);
 
         setAlwaysOnTop(false);
+
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setLocationRelativeTo(null);
+        setLocation(screenSize.width - 15 - w, 30);
 
         ImageLoader imageLoader = new ImageLoader();
 
