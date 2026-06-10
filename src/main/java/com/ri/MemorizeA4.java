@@ -25,9 +25,6 @@ public class MemorizeA4 extends JFrame {
         setLayout(null);
         setUndecorated(true);
 
-        System.out.println(Arrays.toString(GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts()));
-        System.out.println(Arrays.toString(GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()));
-
         JTextField field = new JTextField();
         field.setBounds(20, 10, 570, 60);
         field.setHorizontalAlignment(JTextField.RIGHT);
