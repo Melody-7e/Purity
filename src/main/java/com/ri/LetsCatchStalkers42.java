@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -17,6 +19,8 @@ import javax.swing.plaf.metal.MetalLookAndFeel;
 public class LetsCatchStalkers42 extends JFrame {
     boolean executedOnce = false;
     int     screenShotIndex;
+
+    ExecutorService service = Executors.newSingleThreadExecutor();
 
     public static void main(String[] args)
             throws Exception
@@ -35,7 +39,7 @@ public class LetsCatchStalkers42 extends JFrame {
         setLocationRelativeTo(null);
         setLocation(0, 0);
         setAlwaysOnTop(true);
-        setBackground(new Color(200, 0, 160, 168));
+        setBackground(new Color(200, 0, 160, 64));
         setType(Type.UTILITY);
         setSize(16, 16);
 
@@ -77,7 +81,7 @@ public class LetsCatchStalkers42 extends JFrame {
         if (executedOnce) return;
         executedOnce = true;
 
-        setSize(0, 0);
+        setBackground(new Color(0, 200, 47, 64));
 
         Toolkit tk = Toolkit.getDefaultToolkit();
         tk.beep();
@@ -92,22 +96,34 @@ public class LetsCatchStalkers42 extends JFrame {
     }
 
     private void screenShot(File directory, Timer screenshotTimer) {
-        BufferedImage img;
-        try {
-            Robot robot = new Robot();
+        if (screenShotIndex > 42) System.exit(0);
+        service.execute(() -> {
+            try {
+                Robot robot = new Robot();
 
-            Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
-            img = robot.createScreenCapture(screenRect);
+                Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
+                BufferedImage img = robot.createScreenCapture(screenRect);
 
-            System.out.println(screenShotIndex);
+                System.out.println(screenShotIndex);
 
-            ImageIO.write(img, "png", new File(directory, (screenShotIndex++) + ".png"));
-        } catch (AWTException | IOException e) {
-            throw new RuntimeException(e);
-        }
+                ImageIO.write(img, "png", new File(directory, (screenShotIndex++) + ".png"));
+            } catch (AWTException | IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         if (screenShotIndex == 32) {
             screenshotTimer.stop();
+
+            Robot robot;
+            try {
+                robot = new Robot();
+            } catch (AWTException e) {
+                throw new RuntimeException(e);
+            }
+
+            Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
+            BufferedImage img = robot.createScreenCapture(screenRect);
 
             SmoothDistortedPanel panel = new SmoothDistortedPanel(img, directory);
             panel.setBounds(0, 0, img.getWidth(), img.getHeight());
@@ -169,13 +185,20 @@ class SmoothDistortedPanel extends JPanel {
             }
         } else if (frame < 60) {
             g.drawImage(applyGPUGlitch(screenSource, w, h), 0, 0, null);
-        } else if (frame < 210 && (Math.random() < (frame - 60)/(210 - 60f))) {
+        } else if (frame < 210 && (Math.random()*3/2 < (frame - 60)/(210 - 60f))) {
             Toolkit.getDefaultToolkit().beep(); // quick static noise-like sound
             g.drawImage(applyGPUGlitch(screenSource, w, h), 0, 0, null);
-        } else if (frame == 271) {
+        } else if (frame < 230) {
+            g.setColor(Color.BLACK);
+            g.fillRect(0, 0, w, h);
+        } else if (frame == 251) {
             try {
-                Runtime.getRuntime()
-                       .exec(new String[]{"powershell.exe", "(Get-WmiObject -Namespace root/WMI -Class WmiMonitorBrightnessMethods).WmiSetBrightness(1,0)"});
+                Runtime.getRuntime().exec(new String[]{"powershell.exe", "(Get-WmiObject -Namespace root/WMI -Class WmiMonitorBrightnessMethods).WmiSetBrightness(1,0)"});
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } else if (frame == 291) {
+            try {
                 Runtime.getRuntime().exec(new String[]{"rundll32.exe", "user32.dll,LockWorkStation"});
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -193,9 +216,8 @@ class SmoothDistortedPanel extends JPanel {
             frame.add(comp);
             frame.getRootPane().setWindowDecorationStyle(JRootPane.PLAIN_DIALOG);
             frame.setSize(800, 100);
-        } else if (frame < 230) {
-            g.setColor(Color.BLACK);
-            g.fillRect(0, 0, w, h);
+        } else if (frame > 301) {
+            System.exit(0);
         }
     }
 
