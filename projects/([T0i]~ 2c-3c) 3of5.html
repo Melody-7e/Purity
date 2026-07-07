@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3 of 5</title>
+    <style id="style-k">
+        :root {
+            --primary-hue: 0.0;
+        }
+    </style>
+    <style>
+        :root {
+            --secondary: #9e9e9e;
+            --text: #e0e0e0;
+            --error: #cf6679;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: radial-gradient(circle at top, rgb(0 255 157 / 0.15), #00000000), linear-gradient(45deg, #0a0509, #260a1e);
+            background-attachment: fixed;
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+            margin: 0;
+        }
+        .container {
+            background-color: #06060630;;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            text-align: center;
+            color: oklch(.75 .126 var(--primary-hue));
+            margin-bottom: 0.5rem;
+        }
+        label {
+            display: block;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            background-color: #00000029;
+            border: 1px solid #444;
+            color: white;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+        textarea {
+            resize: vertical;
+            text-wrap-mode: nowrap;
+            scrollbar-width: none;
+            height: 100px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 1.5rem;
+            background-color: oklch(.75 .126 var(--primary-hue));
+            color: #000;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.4s;
+        }
+        button:hover {
+            background-color: oklch(.80 .100 var(--primary-hue));
+        }
+        button:active:hover {
+            background-color: oklch(.70 .100 var(--primary-hue));
+        }
+        .secondary-button {
+            background-color: var(--secondary);
+        }
+        .output-box {
+            margin-top: 1rem;
+            padding: 10px;
+            background: #111;
+            border-left: 4px solid oklch(.75 .126 var(--primary-hue));
+            word-wrap: break-word;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .error {
+            color: var(--error);
+            border-left-color: var(--error);
+        }
+    </style>
+    <style class="encode-only">
+        .tabs {
+            display: flex;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #333;
+        }
+        .tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: bold;
+        }
+        .tab.active {
+            color: oklch(.75 .126 var(--primary-hue));
+            border-bottom: 2px solid oklch(.75 .126 var(--primary-hue));
+        }
+        .section {
+            display: none;
+        }
+        .section.active {
+            display: block;
+        }
+        input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button
+        {
+            -webkit-appearance: none;
+            background: oklch(.75 .126 var(--primary-hue));
+            width: 1em;
+            position: absolute;
+            opacity: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+        }
+        input[type=number]::-webkit-inner-spin-button:hover, input[type=number]::-webkit-outer-spin-button:hover {
+            opacity: 0.5;
+        }
+        table button {
+            width: min-content;
+            margin-top: 0;
+        }
+        table {
+            width: 100%;
+            padding: 1em;
+        }
+        td {
+            padding-left: 1em;
+        }
+        table pre {
+            font-size: larger;
+        }
+        .secondary-text {
+            color: #888;
+        }
+        a {
+            color: oklch(.75 .100 var(--primary-hue));
+            text-decoration: none;
+        }
+        a:hover {
+            color: oklch(.80 .100 var(--primary-hue));
+            text-decoration: underline;
+        }
+        a:hover:active {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 id="title">3 of 5</h1>
+    <p style="text-align: center; color: #888; font-size: 0.85rem;" id="desc">Cryptographically split and recover your secrets.</p>
+
+    <div class="tabs encode-only">
+        <div class="tab active" onclick="switchTab('split')">Split Secret</div>
+        <div class="tab" onclick="switchTab('recover')">Recover Secret</div>
+    </div>
+
+    <div id="split" class="section active encode-only">
+        <label for="header">Title (optional)</label>
+        <input type="text" id="header" placeholder="Enter the title of the secret...">
+
+        <label for="secret">Your Secret</label>
+        <textarea id="secret" placeholder="Enter the secret you want to protect..."></textarea>
+
+        <div style="display: flex; gap: 10px;">
+            <div style="flex: 1;">
+                <label for="threshold">Threshold ($K$)</label>
+                <input type="number" id="threshold" value="3" min="2" max="255">
+            </div>
+            <div style="flex: 1;">
+                <label for="shares">Total Shares ($N$)</label>
+                <input type="number" id="shares" value="5" min="2" max="255">
+            </div>
+        </div>
+
+        <button onclick="splitSecret()">Generate Shares</button>
+        <div id="split-output" class="output-box" style="display: none;"></div>
+    </div>
+
+    <div id="recover" class="section">
+        <label for="input-shares">Enter Shares (One per line)</label>
+        <textarea id="input-shares" style="height: 150px;" placeholder="Paste at least $K$ required shares here..."></textarea>
+
+        <div style="display: flex; gap: 10px;">
+            <button style="flex: 0.15;" onclick="copyTextArea(document.getElementById('input-shares'))" class="secondary-button">Copy</button>
+            <button style="flex: 0.75;" onclick="recoverSecret()">Recover Secret</button>
+            <button style="flex: 0.15;" onclick="importShares()" class="secondary-button">Import</button>
+            <input type="file" id="fileSelector" accept=".html, .txt" multiple style="display: none"/>
+        </div>
+
+        <div id="recover-output" class="output-box" style="display: none;"></div>
+    </div>
+</div>
+
+<div class="encode-only" style="margin-top: 32px;"></div>
+
+<div class="container encode-only">
+    <h1>Me</h1>
+    <p>
+        So, it's a cover for Shamir's Secret Sharing which let you divide some confidential data into <i>$N$</i> shares such that <i>$K$</i>
+        many of them can recover the secret (but not less than <i>$K$</i>). So even if <code>$k - 1</code> of shares got <b>public</b>
+        or <code>$n - $k</code> got <b>lost</b> it won't matter.
+    </p>
+    <p>
+        I loved <a href="https://2of3.ente.com/">2 of 3</a>, it has a nice offline <u>decorated</u>
+        script to recover secret and <u>decorated</u> image based cards too. I wanted to use that for my `purpose` but I need 3 of 5, not
+        2 of 3 (and it doesn't have dynamic parameter for that, at least at not at the time I was checking). So I created my own, instead of
+        <u>decorated</u> image card, I made a <u>decorated</u> html card for each share (so they all hold a script to recover them)
+        [though it doesn't look beautiful as no gallery wants to show preview of a potential malware HTML] and it also includes
+        an CRC-32 hash to maintain the integrity of the secret.
+    </p>
+    <p>
+        I am bad at thinking names. So it's called 3 of 5.
+    </p>
+
+    <h1>Tips and Tricks</h1>
+    <p>
+        In case you want to split very large data (don't use it directly, it just freezes on my PC), you can encrypt your data via
+        something like AES (like just use an encrypted 7z archive) and use a randomly generated password. Then split the password
+        using this... Done~
+    </p>
+    <p>
+        Well it *can* safely spit its own code (30KB), but don't complain that each share is 150KB (I can fix that, but I am lazzy),
+        so just compress that if size matters.
+    </p>
+
+    <h1>Security</h1>
+    <p>
+        I do love to <b>code all by myself</b>, but I really don't like writing cryptographical stuff. So I just used
+        <a href="https://github.com/grempe/secrets.js/tree/v2.0.0">Grempe's secrets.js</a>, so refer to that. Also, the CRC-32
+        hash is calculated by mixing the secret with its UUID first, so even if you have two identical secrets, the hash won't be
+        identical.
+    </p>
+    <p>
+        <strong>Important:</strong> The CRC-32 of the `secret` is saved in each share, so don't have the `secret` small enough to
+        be recoverable by its CRC. (Make it at least 8 letters long, otherwise delete the CRC manually).
+    </p>
+</div>
+
+<!-- @See: https://github.com/grempe/secrets.js/tree/v2.0.0 -->
+<script>/* https://unpkg.com/secrets.js-grempe@2.0.0/secrets.min.js */ !function(t,e){"use strict";"function"==typeof define&&define.amd?define([],function(){return t.secrets=e()}):"object"==typeof exports?module.exports=e(require("crypto")):t.secrets=e(t.crypto)}(this,function(n){"use strict";var u,b,i,a,s;function h(){u={bits:8,radix:16,minBits:3,maxBits:20,bytesPerChar:2,maxBytesPerChar:6,primitivePolynomials:[null,null,1,3,3,5,3,3,29,17,9,5,83,27,43,3,45,9,39,39,9,5,3,33,27,9,71,39,9,5,83]},b={},i=new Array(1024).join("0"),a=!0,s=["nodeCryptoRandomBytes","browserCryptoGetRandomValues","testRandom"]}function f(){return!(!b||!b.rng||"function"!=typeof b.rng)}function g(t,e){var r;if(0===e||1===e)return t;if(e&&1024<e)throw new Error("Padding must be multiples of no larger than 1024 bits.");return e=e||b.bits,t&&(r=t.length%e),r?(i+t).slice(-(e-r+t.length)):t}function c(t){var e,r,n="";for(r=t.length-1;0<=r;r--){if(e=parseInt(t[r],16),isNaN(e))throw new Error("Invalid hex character.");n=g(e.toString(2),4)+n}return n}function m(t){var e,r,n="";for(r=(t=g(t,4)).length;4<=r;r-=4){if(e=parseInt(t.slice(r-4,r),2),isNaN(e))throw new Error("Invalid binary character.");n=e.toString(16)+n}return n}function o(){return!(!n||"object"!=typeof n||"function"!=typeof n.getRandomValues&&"object"!=typeof n.getRandomValues||"function"!=typeof Uint32Array&&"object"!=typeof Uint32Array)}function l(){return"object"==typeof n&&"function"==typeof n.randomBytes}function p(t){function a(t,e,r,n){var i,a=0,o="";for(e&&(i=e.length-1);a<i||o.length<t;)o+=g(Math.abs(parseInt(e[a],r)).toString(2),n),a++;return((o=o.substr(-t)).match(/0/g)||[]).length===o.length?null:o}function e(t){var e,r=null;for(16,4,e=Math.ceil(t/8);null===r;)r=a(t,n.randomBytes(e).toString("hex"),16,4);return r}function r(t){var e,r=null;for(10,32,e=Math.ceil(t/32);null===r;)r=a(t,n.getRandomValues(new Uint32Array(e)),10,32);return r}return t&&"testRandom"===t?(b.typeCSPRNG=t,function(t){var e,r,n=null;r=Math.ceil(t/32),e=new Uint32Array(r);for(var i=0;i<e.length;i++)e[i]=123456789;for(;null===n;)n=a(t,e,10,32);return n}):t&&"nodeCryptoRandomBytes"===t?(b.typeCSPRNG=t,e):t&&"browserCryptoGetRandomValues"===t?(b.typeCSPRNG=t,r):l()?(b.typeCSPRNG="nodeCryptoRandomBytes",e):o()?(b.typeCSPRNG="browserCryptoGetRandomValues",r):void 0}function d(t,e){var r,n=[];for(e&&(t=g(t,e)),r=t.length;r>b.bits;r-=b.bits)n.push(parseInt(t.slice(r-b.bits,r),2));return n.push(parseInt(t.slice(0,r),2)),n}function w(t,e){var r,n=b.logs[t],i=0;for(r=e.length-1;0<=r;r--)i=0!==i?b.exps[(n+b.logs[i])%b.maxShares]^e[r]:e[r];return i}function y(t,e,r){var n,i,a,o,s=0;for(a=0,n=e.length;a<n;a++)if(r[a]){for(i=b.logs[r[a]],o=0;o<n;o++)if(a!==o){if(t===e[o]){i=-1;break}i=(i+b.logs[t^e[o]]-b.logs[e[a]^e[o]]+b.maxShares)%b.maxShares}s=-1===i?s:s^b.exps[i]}return s}function x(t,e,r){var n,i,a=[],o=[t];for(n=1;n<r;n++)o[n]=parseInt(b.rng(b.bits),2);for(i=e+(n=1);n<i;n++)a[n-1]={x:n,y:w(n,o)};return a}function v(t,e,r){var n,i,a,o;if(e=parseInt(e,b.radix),n=(t=parseInt(t,10)||b.bits).toString(36).toUpperCase(),o=(a=Math.pow(2,t)-1).toString(b.radix).length,i=g(e.toString(b.radix),o),"number"!=typeof e||e%1!=0||e<1||a<e)throw new Error("Share id must be an integer between 1 and "+a+", inclusive.");return n+i+r}var t={init:function(t,e){var r,n,i=[],a=[],o=1;if(h(),t&&("number"!=typeof t||t%1!=0||t<u.minBits||t>u.maxBits))throw new Error("Number of bits must be an integer between "+u.minBits+" and "+u.maxBits+", inclusive.");if(e&&-1===s.indexOf(e))throw new Error("Invalid RNG type argument : '"+e+"'");for(b.radix=u.radix,b.bits=t||u.bits,b.size=Math.pow(2,b.bits),b.maxShares=b.size-1,r=u.primitivePolynomials[b.bits],n=0;n<b.size;n++)i[a[n]=o]=n,(o<<=1)>=b.size&&(o^=r,o&=b.maxShares);if(b.logs=i,b.exps=a,e&&this.setRNG(e),f()||this.setRNG(),!(f()&&b.bits&&b.size&&b.maxShares&&b.logs&&b.exps&&b.logs.length===b.size&&b.exps.length===b.size))throw new Error("Initialization failed.")},combine:function(t,e){var r,n,i,a,o,s,h,u="",f=[],l=[];for(e=e||0,r=0,i=t.length;r<i;r++){if(s=this.extractShareComponents(t[r]),void 0===o)o=s.bits;else if(s.bits!==o)throw new Error("Mismatched shares: Different bit settings.");if(b.bits!==o&&this.init(o),-1===f.indexOf(s.id))for(f.push(s.id),n=0,a=(h=d(c(s.data))).length;n<a;n++)l[n]=l[n]||[],l[n][f.length-1]=h[n]}for(r=0,i=l.length;r<i;r++)u=g(y(e,f,l[r]).toString(2))+u;return m(1<=e?u:u.slice(u.indexOf("1")+1))},getConfig:function(){var t={};return t.radix=b.radix,t.bits=b.bits,t.maxShares=b.maxShares,t.hasCSPRNG=f(),t.typeCSPRNG=b.typeCSPRNG,t},extractShareComponents:function(t){var e,r,n,i,a,o={};if((e=parseInt(t.substr(0,1),36))&&("number"!=typeof e||e%1!=0||e<u.minBits||e>u.maxBits))throw new Error("Invalid share : Number of bits must be an integer between "+u.minBits+" and "+u.maxBits+", inclusive.");if(i=Math.pow(2,e)-1,n=(Math.pow(2,e)-1).toString(b.radix).length,(a=new RegExp("^([a-kA-K3-9]{1})([a-fA-F0-9]{"+n+"})([a-fA-F0-9]+)$").exec(t))&&(r=parseInt(a[2],b.radix)),"number"!=typeof r||r%1!=0||r<1||i<r)throw new Error("Invalid share : Share id must be an integer between 1 and "+b.maxShares+", inclusive.");if(a&&a[3])return o.bits=e,o.id=r,o.data=a[3],o;throw new Error("The share data provided is invalid : "+t)},setRNG:function(t){var e="Random number generator is invalid ",r=" Supply an CSPRNG of the form function(bits){} that returns a string containing 'bits' number of random 1's and 0's.";if(t&&"string"==typeof t&&-1===s.indexOf(t))throw new Error("Invalid RNG type argument : '"+t+"'");if((t=t||p())&&"string"==typeof t&&(t=p(t)),a){if(t&&"function"!=typeof t)throw new Error(e+"(Not a function)."+r);if(t&&"string"!=typeof t(b.bits))throw new Error(e+"(Output is not a string)."+r);if(t&&!parseInt(t(b.bits),2))throw new Error(e+"(Binary string output not parseable to an Integer)."+r);if(t&&t(b.bits).length>b.bits)throw new Error(e+"(Output length is greater than config.bits)."+r);if(t&&t(b.bits).length<b.bits)throw new Error(e+"(Output length is less than config.bits)."+r)}return b.rng=t,!0},str2hex:function(t,e){var r,n,i,a,o,s,h="";if("string"!=typeof t)throw new Error("Input must be a character string.");if("number"!=typeof(e=e||u.bytesPerChar)||e<1||e>u.maxBytesPerChar||e%1!=0)throw new Error("Bytes per character must be an integer between 1 and "+u.maxBytesPerChar+", inclusive.");for(r=2*e,n=Math.pow(16,r)-1,o=0,s=t.length;o<s;o++){if(a=t[o].charCodeAt(),isNaN(a))throw new Error("Invalid character: "+t[o]);if(n<a)throw i=Math.ceil(Math.log(a+1)/Math.log(256)),new Error("Invalid character code ("+a+"). Maximum allowable is 256^bytes-1 ("+n+"). To convert this character, use at least "+i+" bytes.");h=g(a.toString(16),r)+h}return h},hex2str:function(t,e){var r,n,i,a="";if("string"!=typeof t)throw new Error("Input must be a hexadecimal string.");if("number"!=typeof(e=e||u.bytesPerChar)||e%1!=0||e<1||e>u.maxBytesPerChar)throw new Error("Bytes per character must be an integer between 1 and "+u.maxBytesPerChar+", inclusive.");for(n=0,i=(t=g(t,r=2*e)).length;n<i;n+=r)a=String.fromCharCode(parseInt(t.slice(n,n+r),16))+a;return a},random:function(t){if("number"!=typeof t||t%1!=0||t<2||65536<t)throw new Error("Number of bits must be an Integer between 1 and 65536.");return m(b.rng(t))},share:function(t,e,r,n){var i,a,o,s,h,u=new Array(e),f=new Array(e);if(n=n||128,"string"!=typeof t)throw new Error("Secret must be a string.");if("number"!=typeof e||e%1!=0||e<2)throw new Error("Number of shares must be an integer between 2 and 2^bits-1 ("+b.maxShares+"), inclusive.");if(e>b.maxShares)throw i=Math.ceil(Math.log(e+1)/Math.LN2),new Error("Number of shares must be an integer between 2 and 2^bits-1 ("+b.maxShares+"), inclusive. To create "+e+" shares, use at least "+i+" bits.");if("number"!=typeof r||r%1!=0||r<2)throw new Error("Threshold number of shares must be an integer between 2 and 2^bits-1 ("+b.maxShares+"), inclusive.");if(r>b.maxShares)throw i=Math.ceil(Math.log(r+1)/Math.LN2),new Error("Threshold number of shares must be an integer between 2 and 2^bits-1 ("+b.maxShares+"), inclusive.  To use a threshold of "+r+", use at least "+i+" bits.");if(e<r)throw new Error("Threshold number of shares was "+r+" but must be less than or equal to the "+e+" shares specified as the total to generate.");if("number"!=typeof n||n%1!=0||n<0||1024<n)throw new Error("Zero-pad length must be an integer between 0 and 1024 inclusive.");for(o=0,h=(t=d(t="1"+c(t),n)).length;o<h;o++)for(a=x(t[o],e,r),s=0;s<e;s++)u[s]=u[s]||a[s].x.toString(b.radix),f[s]=g(a[s].y.toString(2))+(f[s]||"");for(o=0;o<e;o++)u[o]=v(b.bits,u[o],m(f[o]));return u},newShare:function(t,e){var r;if(t&&"string"==typeof t&&(t=parseInt(t,b.radix)),r=t.toString(b.radix),t&&r&&e&&e[0])return v(this.extractShareComponents(e[0]).bits,r,this.combine(e,t));throw new Error("Invalid 'id' or 'shares' Array argument to newShare().")},_reset:h,_padLeft:g,_hex2bin:c,_bin2hex:m,_hasCryptoGetRandomValues:o,_hasCryptoRandomBytes:l,_getRNG:p,_isSetRNG:f,_splitNumStringToIntArray:d,_horner:w,_lagrange:y,_getShares:x,_constructPublicShareString:v};return t.init(),t});</script>
+<!-- <script src="https://unpkg.com/secrets.js-grempe@2.0.0/secrets.min.js"> If you want smaller share size (but it won't work completely offline)-->
+
+<script id="script-k">
+    const k = 0;
+    const hash = null;
+
+    let secretId = null;
+</script>
+
+<script>
+    function hexToString(hex) {
+        const bytes = new Uint8Array(hex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+        const decoder = new TextDecoder();
+        return decoder.decode(bytes);
+    }
+
+    function recoverSecret() {
+        const rawShares = document.getElementById('input-shares').value;
+        const output = document.getElementById('recover-output');
+
+        const sharesArray = rawShares.split('\n')
+            .map(s => s.trim())
+            .filter(s => s.length > 0);
+
+        if (sharesArray.length === 0) {
+            showOutput(output, "Please enter at least one valid share.", true);
+            return;
+        }
+
+        if (sharesArray.length < k) {
+            showOutput(output, "You need at least " + k + " shares.", true);
+            return;
+        }
+
+        try {
+            const recoveredHex = secrets.combine(sharesArray);
+            const recoveredText = hexToString(recoveredHex);
+
+            if (recoveredText) {
+                showOutput(output, recoveredText, false);
+
+                if (k !== 0) {
+                    let thisHash = calculateCRC32(recoveredText);
+                    if (hash && thisHash !== hash) showOutput(output, "Hash Mismatched, one or more shares might be wrong.", true)
+                }
+            } else {
+                throw new Error("Invalid shares or insufficient threshold reached.");
+            }
+        } catch (e) {
+            showOutput(output, "Decryption Failed: " + e, true);
+        }
+    }
+
+    function showOutput(element, message, isError, safeMode = true) {
+        element.style.display = 'block';
+        if (safeMode) {
+            element.textContent = message;
+        } else {
+            element.innerHTML = message;
+        }
+        if (isError) {
+            element.classList.add('error');
+        } else {
+            element.classList.remove('error');
+        }
+    }
+
+    function copyTextArea(textarea) {
+        textarea.select();
+        navigator.clipboard.writeText(textarea.value);
+    }
+
+    function importShares() {
+        document.getElementById("fileSelector").click();
+    }
+
+    document.getElementById("fileSelector").addEventListener("change", async (event) => {
+        const fileList = event.target.files;
+        if (fileList.length === 0) return;
+
+        const errorOutput = document.getElementById('recover-output');
+        const output = document.getElementById("input-shares");
+
+        let errorMsg = "";
+        for (let i = 0; i < fileList.length; i++) {
+            const file = fileList[i];
+
+            try {
+                const code = await readFile(file);
+                output.value += `\n${code}`;
+            } catch (e) {
+                errorMsg += `${e}\n`;
+            }
+        }
+
+        if (errorMsg.length > 0) {showOutput(errorOutput, errorMsg, true);}
+    });
+
+    function readFile(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+
+            reader.onload = (e) => {
+                const content = e.target.result;
+                const lines = content.split('\n', 4);
+
+                const errorMsg = "Invalid File, try copy pasting code manually: " + file.name;
+
+                if (lines.length !== 3) {reject(new Error(errorMsg)); return;}
+                const main = lines[1];
+
+                if (main.startsWith("<!-- ") && main.endsWith(" -->")) {
+                    const data = main.substring(5, main.length-4).split(" | ", 3);
+
+                    if (data.length !== 2) {reject(new Error(errorMsg)); return;}
+
+                    const code = data[0];
+                    const id = data[1];
+
+                    if (k !== 0 && id.trim() !== secretId.trim()) {reject(new Error("This file belong to a different batch: " + file.name)); return;}
+
+                    resolve(code);
+                } else {
+                    reject(new Error(errorMsg));
+                }
+            };
+
+            reader.onerror = () => reject(new Error("Could not read file, try copy pasting code manually: " + file.name));
+            reader.readAsText(file);
+        });
+    }
+
+    const crc32Table = (() => {
+        const table = new Int32Array(256);
+        for (let i = 0; i < 256; i++) {
+            let c = i;
+            for (let j = 0; j < 8; j++) {
+                c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+            }
+            table[i] = c;
+        }
+        return table;
+    })();
+
+    function calculateCRC32(text) {
+        const bytes = new TextEncoder().encode(secretId + text);
+        let crc = 0 ^ (-1);
+
+        for (let i = 0; i < bytes.length; i++) {
+            crc = (crc >>> 8) ^ crc32Table[(crc ^ bytes[i]) & 0xFF];
+        }
+
+        return ((crc ^ (-1)) >>> 0).toString(16).padStart(8, '0');
+    }
+</script>
+
+<script class="encode-only">
+    (function init() {
+        const hue = new Date().getDay() * 360 / 7;
+        document.getElementById("style-k").innerHTML = `:root {--primary-hue: ${hue};}`;
+    }) ();
+
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelector(`.tab[onclick="switchTab('${tabId}')"]`).classList.add('active');
+        document.getElementById(tabId).classList.add('active');
+    }
+
+    function stringToHex(str) {
+        const encoder = new TextEncoder();
+        const bytes = encoder.encode(str);
+        return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    function splitSecret() {
+        secretId = crypto.randomUUID();
+        const secretText = document.getElementById('secret').value;
+        const numShares = parseInt(document.getElementById('shares').value);
+        const threshold = parseInt(document.getElementById('threshold').value);
+        const output = document.getElementById('split-output');
+
+        if (!secretText) {
+            showOutput(output, "Please enter a secret.", true);
+            return;
+        }
+        if (threshold > numShares) {
+            showOutput(output, "Threshold cannot be greater than Total Shares.", true);
+            return;
+        }
+
+        try {
+            const hexSecret = stringToHex(secretText);
+            const shares = secrets.share(hexSecret, numShares, threshold);
+            const hash = calculateCRC32(secretText);
+
+            let inner = "<table>";
+            for (let i = 0; i < shares.length; i++) {
+                inner += "<tr>";
+
+                const id = (i + 1).toString(10).padStart(2, '0');
+                const hue = 360 * i / shares.length;
+
+                inner += `<td style='width: 100%;'><pre id='share-${id}'>Share ${id}</pre></td>`;
+                inner += `<td><button onclick='copy("${id}", "${shares[i]}")' class='secondary-button'>Copy</button></td>`;
+                inner += `<td><button onclick='createAndDownloadText("${id}", "${shares[i]}")' class='secondary-button'>Text</button></td>`;
+                inner += `<td><button onclick='createAndDownload("${id}", "${shares[i]}", "${hash}", "${hue}")'>Download</button></td>`;
+
+                inner += "</tr>";
+            }
+
+            inner += "</table>";
+            inner += "<button onclick='downloadAll(\"" + shares.toString() + "\", \"" + hash + "\")'>Download All</button>"
+            inner += "<p>*Download option also includes script to recover the data offline and CRC-32 to check data integrity and an uuid to verify batch.</p>"
+            inner += "<p class='secondary-text'>*Text option only includes an extra uuid to verify batch, and it can be accepted by `Import` option (unless edited, make sure not to change, not even newlines, otherwise you need to manually copy and paste) [well you can write anything in the first and third line of the text file, just don't create a forth line and it will be valid].</p>"
+            inner += "<p class='secondary-text'>*You can change the title without refreshing the codes (don't know how it could be useful). Also title is stored in plain-text (no encryption) in the HTML version (`Download` option) as the header (H1) of the documet, and has no significance for `Copy` and `Text`. If you want to encrypt the title too, add it to secret field instead, write something like 'Title: Stuff Stuff, Secret: Secret Stuff' in the secret field.</p>"
+
+            showOutput(output, inner, false, false);
+        } catch (e) {
+            showOutput(output, "Encryption Error: " + e.message, true);
+        }
+    }
+
+    function mark(id) {
+        const element = document.getElementById("share-" + id);
+        if (!element.innerHTML.endsWith("*")) element.innerHTML += "*";
+    }
+
+    function copy(id, share) {
+        navigator.clipboard.writeText(share);
+        mark(id);
+    }
+
+    function createAndDownloadText(id, share) {
+        const header = document.getElementById("header").value;
+
+        const string = "\n<!-- " + share + " | " + secretId + " -->\n";
+
+        const blob = new Blob([string], { type: "text/plain;charset=utf-8" });
+        const downloadLink = document.createElement("a");
+
+        downloadLink.href = URL.createObjectURL(blob);
+        downloadLink.download = `${header}-${id}.txt`;
+
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+        URL.revokeObjectURL(downloadLink.href);
+
+        if (id) mark(id);
+    }
+
+    function createAndDownload(id, share, hash, hue) {
+        const docClone = document.cloneNode(true);
+
+        const header = document.getElementById("header").value;
+        const threshold = parseInt(document.getElementById('threshold').value);
+
+        docClone.getElementById("script-k").innerHTML = `const k = ${threshold}; const secretId = '${secretId}'; const hash = '${hash}';`;
+        docClone.getElementById("style-k").innerHTML = `:root {--primary-hue: ${hue};}`;
+        docClone.getElementById("title").innerHTML = `${header} (${id})`;
+        docClone.getElementById("desc").innerHTML = `You need at least ${threshold} shares to recover the data.`;
+        docClone.getElementById("input-shares").innerHTML = share + '\n';
+        docClone.getElementById("input-shares").placeholder = "Paste shares here...";
+
+        const elementsToDelete = docClone.documentElement.getElementsByClassName("encode-only");
+        Array.from(elementsToDelete).forEach(el => el.remove());
+
+        let htmlString = docClone.documentElement.outerHTML;
+
+        htmlString = htmlString
+            .replace(/\r?\n|\r/g, ' ')
+            .replace(/\s{2,}/g, ' ')
+            .replace(/>\s+</g, '><')
+            .trim();
+
+        htmlString = "<!DOCTYPE html>\n" + "<!-- " + share + " | " + secretId + " -->\n" + htmlString;
+
+        const blob = new Blob([htmlString], { type: "text/html;charset=utf-8" });
+        const downloadLink = document.createElement("a");
+
+        downloadLink.href = URL.createObjectURL(blob);
+        downloadLink.download = `${header}-${id}.html`;
+
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+        URL.revokeObjectURL(downloadLink.href);
+
+        if (id) mark(id);
+    }
+
+    function downloadAll(sharesString, hash) {
+        const shares = sharesString.split(',');
+
+        for (let i = 0; i < shares.length; i++) {
+            let id = (i + 1).toString(10).padStart(2, '0');
+            const hue = 360 * i / shares.length;
+
+            createAndDownload(id, shares[i], hash, hue);
+        }
+    }
+</script>
+</body>
+</html>
