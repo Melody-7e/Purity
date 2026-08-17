@@ -5,9 +5,7 @@ import static com.ri.decorate5c.EffectPanel.heartCoordinates;
 import com.ri.helper.PurityMaths;
 
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -99,11 +97,12 @@ public class Decorate5c extends JFrame {
         setLocationRelativeTo(null);
         setLocation(screenSize.width - 15 - w, 30);
 
-        ImageLoader imageLoader = new ImageLoader();
 
         InfoPanel   infoPanel   = new InfoPanel(this);
         ImagePanel  imagePanel  = new ImagePanel(this);
         EffectPanel effectPanel = new EffectPanel(this);
+
+        ImageLoader imageLoader = new ImageLoader(infoPanel);
 
         Timer timer = createTimer(imageLoader, imagePanel, infoPanel);
 
@@ -272,6 +271,14 @@ public class Decorate5c extends JFrame {
         addMouseListener(mouseHandler);
         addMouseMotionListener(mouseHandler);
         addMouseWheelListener(mouseHandler);
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                super.windowClosed(e);
+                imageLoader.close();
+            }
+        });
 
         setUndecorated(true);
         setBackground(new Color(0, 0, 0, 180));

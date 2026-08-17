@@ -1,9 +1,10 @@
 package com.ri.decorate5c;
 
-import com.microsoft.playwright.*;
-import com.microsoft.playwright.options.Cookie;
+import com.microsoft.playwright.BrowserContext;
+import com.microsoft.playwright.BrowserType;
+import com.microsoft.playwright.Page;
+import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.options.WaitUntilState;
-import com.ri.meta.LocalVariables;
 
 import java.awt.image.BufferedImage;
 import java.io.Closeable;
@@ -13,29 +14,35 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
 
 public class ImageLoader implements Closeable {
     public static final boolean OFFLINE_MODE  = false;
-    public static final File    OFFLINE_FILES = new File(System.getProperty("user.home"), // or use Projects.PROJECT_DIR
-                                                         "Desktop/Wallpaper/decorate5c_offlines/");
+    public static final File    OFFLINE_FILES = new File(
+            System.getProperty("user.home"), // or use Projects.PROJECT_DIR
+            "Desktop/Wallpaper/decorate5c_offlines/"
+    );
 
-    public static final boolean HIGH_RES      = false;
-    public static final float   MIN_ASPECT    = 0.3f;
-    public static final float   MAX_ASPECT    = 0.9f;
+    public static final boolean HIGH_RES   = false;
+    public static final float   MIN_ASPECT = 0.3f;
+    public static final float   MAX_ASPECT = 0.9f;
 
     private static final String URL   = "https://in.pinterest.com/";
     private static final String AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36";
 
-    private final Playwright playwright;
-    private final Browser    browser;
-    private final Page       page;
+    private final Playwright     playwright;
+    private final BrowserContext context;
+    private final Page           page;
 
     private final File             directory;
     private final Stack<ImagePath> imagePaths = new Stack<>();
     private final File[]           offlinePaths;
+    private final InfoPanel infoPanel;
 
     private String        selectedUrl  = URL;
     private String        currentUrl   = URL;
@@ -47,19 +54,9 @@ public class ImageLoader implements Closeable {
     private Thread        cachedThread;
     private boolean       cachingImage;
 
-    public ImageLoader()
+    public ImageLoader(InfoPanel infoPanel)
     {
-        /*
-         * For `LocalVariables`
-         *
-         * Go to `pinterest.com` and open devtools (Inspect Page, Shift+Ctrl+C) and go the network tab.
-         * Refresh page and see the first requests (with name *.pinterest.com), in the `Request Headers` area find `Cookie`
-         * Find _auth=...; and _pinterest_sess=...; in it and copy the values.
-         * _auth is integer and _pinterest_sess is a base64 encoded data.
-         * Write it in localVariables.txt with name decorate5c_auth and decorate5c_pinterest_sess respectively.
-         * */
-        String auth = Objects.requireNonNull(LocalVariables.get("decorate5c_auth"));
-        String sess = Objects.requireNonNull(LocalVariables.get("decorate5c_pinterest_sess"));
+        this.infoPanel = infoPanel;
 
         try {
             directory = Files.createTempDirectory("Decorate5c").toFile();
@@ -67,39 +64,56 @@ public class ImageLoader implements Closeable {
             throw new RuntimeException(e);
         }
 
-        Thread.UncaughtExceptionHandler uncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler();
-        Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
-                if (directory.exists()) {
-                    Files.delete(directory.toPath());
+                if (Files.exists(directory.toPath())) {
+                    try (Stream<Path> walk = Files.walk(directory.toPath())) {
+                        walk.sorted(Comparator.reverseOrder())
+                            .map(Path::toFile)
+                            .forEach(File::delete);
+                    }
                 }
-            } catch (IOException err) {
-                err.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-
-            uncaughtExceptionHandler.uncaughtException(t, e);
-        });
+        }));
 
         ArrayList<File> offlineFiles = new ArrayList<>(Arrays.stream(Objects.requireNonNull(OFFLINE_FILES.listFiles()))
-                                                      .filter(p -> p.getName().matches(".*\\.(png|jpg|jpeg|webp|gif)"))
-                                                      .toList());
+                                                             .filter(p -> p.getName().matches(".*\\.(png|jpg|jpeg|webp|gif)"))
+                                                             .toList());
         Collections.shuffle(offlineFiles);
         offlinePaths = offlineFiles.toArray(new File[0]);
 
         if (!OFFLINE_MODE) {
             playwright = Playwright.create();
-            browser    = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true));
 
-            BrowserContext context = browser.newContext();
-            context.addCookies(Arrays.asList(
-                    new Cookie("_auth", auth).setDomain(".pinterest.com").setPath("/"),
-                    new Cookie("_pinterest_sess", sess).setDomain(".pinterest.com").setPath("/")
-            ));
+            String userDataDir = "C:/Users/91750/AppData/Local/Google/Chrome/User Data/PinterestProfile";
 
-            page = context.newPage();
+            context = playwright.chromium().launchPersistentContext(
+                    Paths.get(userDataDir),
+                    new BrowserType.LaunchPersistentContextOptions()
+                            .setHeadless(false)
+                            .setChannel("chrome")
+                            .setArgs(List.of(
+                                    "--profile-directory=Default",
+
+                                    "--disable-gpu",                      // Disables hardware 3D acceleration
+                                    "--disable-dev-shm-usage",            // Prevents shared memory bottlenecks
+                                    "--disable-extensions",               // Disables Chrome extensions running in background
+                                    "--disable-component-update",         // Stops Chrome downloading background components
+                                    "--disable-background-networking",    // Reduces background network sync/pings
+                                    "--disable-background-timer-throttling",
+                                    "--disable-backgrounding-occluded-windows",
+                                    "--mute-audio",                       // Turns off audio engine overhead
+                                    "--no-first-run",                     // Skips welcome tasks
+                                    "--no-default-browser-check"          // Skips default browser prompts
+                            ))
+            );
+
+            page = context.pages().getFirst();
         } else {
             playwright = null;
-            browser    = null;
+            context    = null;
             page       = null;
         }
 
@@ -169,6 +183,7 @@ public class ImageLoader implements Closeable {
                 imagePaths.add(new ImagePath(output, link));
 
                 System.out.println("Image: " + img + " | Linked to: " + link);
+                infoPanel.update(false, isOnline(), isDownloaded(), numImages());
             } catch (Exception e) {
                 e.printStackTrace(System.err);
             }
@@ -181,8 +196,10 @@ public class ImageLoader implements Closeable {
     @Override
     public void close()
     {
-        browser.close();
-        playwright.close();
+        if (playwright != null) {
+            context.close();
+            playwright.close();
+        }
     }
 
     boolean isOnline() {
@@ -204,13 +221,26 @@ public class ImageLoader implements Closeable {
 
     boolean select() {
         needRefresh = true;
+        loading = true;
+
         if (currentUrl != null) selectedUrl = currentUrl;
+
+        System.out.println("loading (select)");
+        Thread thread = new Thread(this::fetchImages);
+        thread.start();
+
         return currentUrl != null;
     }
 
     void unselect() {
         needRefresh = true;
+        loading = true;
         selectedUrl = URL;
+
+        System.out.println("loading (unselect)");
+        Thread thread = new Thread(this::fetchImages);
+        thread.start();
+
     }
 
     boolean save(BufferedImage img) {
@@ -265,7 +295,7 @@ public class ImageLoader implements Closeable {
         }
 
         try {
-            if (!imagePaths.empty()){
+            if (!imagePaths.empty()) {
                 ImagePath imagePath = imagePaths.pop();
                 cachedUrl = imagePath.link;
 
@@ -273,7 +303,7 @@ public class ImageLoader implements Closeable {
                 boolean       _     = imagePath.path.delete();
                 cachedImage = image;
             } else {
-                cachedUrl = null;
+                cachedUrl   = null;
                 cachedImage = nextOfflineFile();
             }
         } catch (IOException e) {

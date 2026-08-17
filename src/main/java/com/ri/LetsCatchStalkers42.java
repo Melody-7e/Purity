@@ -133,12 +133,24 @@ public class LetsCatchStalkers42 extends JFrame {
                     60, e -> {
                 if (panel.isShowing()) {
                     panel.repaint();
+
+                    if (Math.random() < 0.125) {
+                        int x = (int) (Math.random()*getWidth());
+                        int y = (int) (Math.random()*getHeight());
+                        robot.mouseMove(x, y);
+                    }
                 } else {
                     ((Timer) e.getSource()).stop();
                 }
-            }
-            );
+            });
             timer.start();
+
+            Timer forceFocus = new Timer(30, e -> {
+                robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+                robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+            });
+            forceFocus.setRepeats(false);
+            forceFocus.start();
 
             getRootPane().setWindowDecorationStyle(JRootPane.NONE);
             setExtendedState(JFrame.MAXIMIZED_BOTH);
